@@ -579,7 +579,6 @@
   </div>
 
   
-  <script size="300" alpha="0.6" zIndex="-1" src="/lib/canvas-ribbon/canvas-ribbon.js"></script>
   <script src="/lib/anime.min.js"></script>
   <script src="/lib/velocity/velocity.min.js"></script>
   <script src="/lib/velocity/velocity.ui.min.js"></script>
@@ -597,8 +596,6 @@
 
   <script defer src="/lib/three/three.min.js"></script>
     <script defer src="/lib/three/three-waves.min.js"></script>
-    <script defer src="/lib/three/canvas_lines.min.js"></script>
-    <script defer src="/lib/three/canvas_sphere.min.js"></script>
 
 
   
@@ -630,7 +627,7 @@
 NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
   NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
     var GUEST = ['nick', 'mail', 'link'];
-    var guest = 'nick,mail';
+    var guest = 'nick,mail,link';
     guest = guest.split(',').filter(item => {
       return GUEST.includes(item);
     });
@@ -641,7 +638,7 @@ NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
       appId      : 'L9teeXp3grO7RzXxN0qgCe1f-gzGzoHsz',
       appKey     : 'AiCKG7HNmkhioNUpRvDajo1F',
       placeholder: "留下邮箱，有回复时你将收到提醒，邮箱不会被公开。",
-      avatar     : 'buaajz',
+      avatar     : 'mp',
       meta       : guest,
       pageSize   : '10' || 10,
       visitor    : true,
@@ -653,6 +650,30 @@ NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
   }, window.Valine);
 });
 </script>
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: 'L9teeXp3grO7RzXxN0qgCe1f-gzGzoHsz',
+        appKey: 'AiCKG7HNmkhioNUpRvDajo1F',
+        placeholder: '留下邮箱，有回复时你将收到提醒，邮箱不会被公开。',
+        avatar:'mp',
+        guest_info:guest,
+        pageSize:'10' || 10,
+        avatar_cdn:'https://www.gravatar.com/avatar/',
+});
+  </script>
 
 </body>
 </html>
