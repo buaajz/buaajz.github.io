@@ -22,24 +22,21 @@
     var CONFIG = {"hostname":"buaajz.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="ThreadLocal简介ThreadLocal是线程Thread中属性threadLocals的管理者。ThreadLocal类用来提供线程内部的局部变量。这种变量在多线程环境下访问(通过get或set方法访问)时能保证各个线程里的变量相对独立于其他线程内的变量。ThreadLocal实例通常来说都是private static类型的，用于关联线程和线程的上下文。 与Thread、ThreadL">
+  <meta name="description" content="Executor框架Executor框架的最大优点是把任务的提交和执行解耦。要执行任务的人只需把Task描述清楚，然后提交即可。这个Task是怎么被执行的，被谁执行的，什么时候执行的，提交的人就不用关心了。具体点讲，提交一个Callable对象给ExecutorService（如最常用的线程池ThreadPoolExecutor），将得到一个Future对象，调用Future对象的get方法等待执">
 <meta property="og:type" content="article">
-<meta property="og:title" content="ThreadLocal深入探究">
-<meta property="og:url" content="https://buaajz.github.io/2020/03/29/ThreadLocal%E6%B7%B1%E5%85%A5%E6%8E%A2%E7%A9%B6/index.html">
+<meta property="og:title" content="Executor框架探究">
+<meta property="og:url" content="https://buaajz.github.io/2020/04/05/Executor%E6%A1%86%E6%9E%B6%E6%8E%A2%E7%A9%B6/index.html">
 <meta property="og:site_name" content="金年轻">
-<meta property="og:description" content="ThreadLocal简介ThreadLocal是线程Thread中属性threadLocals的管理者。ThreadLocal类用来提供线程内部的局部变量。这种变量在多线程环境下访问(通过get或set方法访问)时能保证各个线程里的变量相对独立于其他线程内的变量。ThreadLocal实例通常来说都是private static类型的，用于关联线程和线程的上下文。 与Thread、ThreadL">
+<meta property="og:description" content="Executor框架Executor框架的最大优点是把任务的提交和执行解耦。要执行任务的人只需把Task描述清楚，然后提交即可。这个Task是怎么被执行的，被谁执行的，什么时候执行的，提交的人就不用关心了。具体点讲，提交一个Callable对象给ExecutorService（如最常用的线程池ThreadPoolExecutor），将得到一个Future对象，调用Future对象的get方法等待执">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2020-03-29T12:51:27.000Z">
-<meta property="article:modified_time" content="2020-04-05T08:14:58.244Z">
+<meta property="article:published_time" content="2020-04-05T07:14:04.000Z">
+<meta property="article:modified_time" content="2020-04-05T08:12:51.715Z">
 <meta property="article:author" content="金年轻">
+<meta property="article:tag" content="Executor框架">
 <meta property="article:tag" content="JAVA并发编程实战">
-<meta property="article:tag" content="并发">
-<meta property="article:tag" content="JAVA源码">
-<meta property="article:tag" content="多线程">
-<meta property="article:tag" content="线程隔离">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="https://buaajz.github.io/2020/03/29/ThreadLocal%E6%B7%B1%E5%85%A5%E6%8E%A2%E7%A9%B6/">
+<link rel="canonical" href="https://buaajz.github.io/2020/04/05/Executor%E6%A1%86%E6%9E%B6%E6%8E%A2%E7%A9%B6/">
 
 
 <script id="page-configurations">
@@ -52,7 +49,7 @@
   };
 </script>
 
-  <title>ThreadLocal深入探究 | 金年轻</title>
+  <title>Executor框架探究 | 金年轻</title>
   
 
 
@@ -200,7 +197,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://buaajz.github.io/2020/03/29/ThreadLocal%E6%B7%B1%E5%85%A5%E6%8E%A2%E7%A9%B6/">
+    <link itemprop="mainEntityOfPage" href="https://buaajz.github.io/2020/04/05/Executor%E6%A1%86%E6%9E%B6%E6%8E%A2%E7%A9%B6/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/UserImage.jpeg">
@@ -213,7 +210,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          ThreadLocal深入探究
+          Executor框架探究
         </h1>
 
         <div class="post-meta">
@@ -223,7 +220,7 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2020-03-29 20:51:27" itemprop="dateCreated datePublished" datetime="2020-03-29T20:51:27+08:00">2020-03-29</time>
+              <time title="创建时间：2020-04-05 15:14:04" itemprop="dateCreated datePublished" datetime="2020-04-05T15:14:04+08:00">2020-04-05</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -240,7 +237,7 @@
             </span>
 
           
-            <span id="/2020/03/29/ThreadLocal%E6%B7%B1%E5%85%A5%E6%8E%A2%E7%A9%B6/" class="post-meta-item leancloud_visitors" data-flag-title="ThreadLocal深入探究" title="阅读次数">
+            <span id="/2020/04/05/Executor%E6%A1%86%E6%9E%B6%E6%8E%A2%E7%A9%B6/" class="post-meta-item leancloud_visitors" data-flag-title="Executor框架探究" title="阅读次数">
               <span class="post-meta-item-icon">
                 <i class="fa fa-eye"></i>
               </span>
@@ -255,8 +252,8 @@
       </span>
       <span class="post-meta-item-text">Valine：</span>
     
-    <a title="valine" href="/2020/03/29/ThreadLocal%E6%B7%B1%E5%85%A5%E6%8E%A2%E7%A9%B6/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2020/03/29/ThreadLocal%E6%B7%B1%E5%85%A5%E6%8E%A2%E7%A9%B6/" itemprop="commentCount"></span>
+    <a title="valine" href="/2020/04/05/Executor%E6%A1%86%E6%9E%B6%E6%8E%A2%E7%A9%B6/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/04/05/Executor%E6%A1%86%E6%9E%B6%E6%8E%A2%E7%A9%B6/" itemprop="commentCount"></span>
     </a>
   </span>
   
@@ -266,14 +263,14 @@
                 <i class="fa fa-file-word-o"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>2.6k</span>
+              <span>4.2k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="fa fa-clock-o"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>2 分钟</span>
+              <span>4 分钟</span>
             </span>
 
         </div>
@@ -285,34 +282,27 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h2 id="ThreadLocal简介"><a href="#ThreadLocal简介" class="headerlink" title="ThreadLocal简介"></a>ThreadLocal简介</h2><p>ThreadLocal是线程Thread中属性<strong>threadLocals</strong>的管理者。<br>ThreadLocal类用来提供<strong>线程内部的局部变量</strong>。这种变量在多线程环境下访问(通过get或set方法访问)时能保证各个线程里的变量相对独立于其他线程内的变量。ThreadLocal实例通常来说都是<strong>private static</strong>类型的，用于关联线程和线程的上下文。</p>
-<h2 id="与Thread、ThreadLocalMap的联系"><a href="#与Thread、ThreadLocalMap的联系" class="headerlink" title="与Thread、ThreadLocalMap的联系"></a>与Thread、ThreadLocalMap的联系</h2><p>ThreadLocal类内部定义<strong>ThreadLocalMap</strong>类。ThreadLocalMap内部存储着Entry(ThreadLocal<?> k, Object v) 数组，键类型为ThreadLocal<?> 。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">static class ThreadLocalMap &#123;</span><br><span class="line"></span><br><span class="line">    static class Entry extends WeakReference&lt;ThreadLocal&lt;?&gt;&gt; &#123;</span><br><span class="line">        &#x2F;** The value associated with this ThreadLocal. *&#x2F;</span><br><span class="line">        Object value;</span><br><span class="line"></span><br><span class="line">        Entry(ThreadLocal&lt;?&gt; k, Object v) &#123;</span><br><span class="line">            super(k);</span><br><span class="line">            value &#x3D; v;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+        <h2 id="Executor框架"><a href="#Executor框架" class="headerlink" title="Executor框架"></a>Executor框架</h2><p>Executor框架的最大优点是把任务的<strong>提交和执行解耦</strong>。要执行任务的人只需把Task描述清楚，然后提交即可。这个Task是怎么被执行的，被谁执行的，什么时候执行的，提交的人就不用关心了。具体点讲，提交一个Callable对象给ExecutorService（如最常用的线程池ThreadPoolExecutor），将得到一个Future对象，调用Future对象的get方法等待执行结果就好了。Executor框架的内部使用了线程池机制，它在java.util.cocurrent 包下，通过该框架来控制线程的启动、执行和关闭，可以简化并发编程的操作。<br>Executor框架包括：<strong>线程池，Executor，Executors，ExecutorService，CompletionService，Future，Callable</strong>等。<br>Executor接口中之定义了一个方法<strong>execute</strong>（Runnable command），该方法接收一个Runnable实例，它用来执行一个任务，任务即一个实现了Runnable接口的类。<br><strong>ExecutorService</strong>接口继承自Executor接口，它提供了更丰富的实现多线程的方法，比如，ExecutorService提供了关闭自己的方法，以及可为跟踪一个或多个异步任务执行状况而生成 Future 的方法。<br>可以通过多种方法创建Future来描述任务。ExecutorService中所有的<strong>submit</strong>方法都返回Future，从而将一个Runnable或者callable提交给Executor并得到一个Future来获取任务的执行结果或者取消任务。<br>还可以显示的为指定的Runnable或者callable实例化一个FutureTask。从java6开始ExecutorService可以改写newTaskFor方法，创建一个新的FutureTask。</p>
+<h2 id="Executor生命周期"><a href="#Executor生命周期" class="headerlink" title="Executor生命周期"></a>Executor生命周期</h2><p>可以调用ExecutorService的<strong>shutdown（）</strong>方法来平滑地关闭 ExecutorService，调用该方法后，将导致ExecutorService停止接受任何新的任务且等待已经提交的任务执行完成(已经提交的任务会分两类：一类是已经在执行的，另一类是还没有开始执行的)，当所有已经提交的任务执行完毕后将会关闭ExecutorService。因此我们一般用该接口来实现和管理多线程。<br>ExecutorService的生命周期包括三种状态：<strong>运行、关闭、终止</strong>。创建后便进入运行状态，当调用了shutdown（）方法时，便进入关闭状态，此时意味着ExecutorService不再接受新的任务，但它还在执行已经提交了的任务，当素有已经提交了的任务执行完后，便到达终止状态。如果不调用shutdown（）方法，ExecutorService会一直处在运行状态，不断接收新的任务，执行新的任务，服务器端一般不需要关闭它，保持一直运行即可。</p>
+<h3 id="ExecutorService的invokeAll方法"><a href="#ExecutorService的invokeAll方法" class="headerlink" title="ExecutorService的invokeAll方法"></a>ExecutorService的invokeAll方法</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;T&gt; List&lt;Future&lt;T&gt;&gt; invokeAll(Collection&lt;? extends Callable&lt;T&gt;&gt; tasks,</span><br><span class="line">                            long timeout,</span><br><span class="line">                            TimeUnit unit)</span><br><span class="line">                    throws InterruptedException</span><br></pre></td></tr></table></figure>
+<p>多个任务提交并返回一组Future结果。</p>
+<h3 id="CompletionService"><a href="#CompletionService" class="headerlink" title="CompletionService"></a>CompletionService</h3><p>一种将新异步任务的生产与已完成任务的结果消耗相分离的服务。 生产者submit执行任务。 消费者take完成任务并按照完成的顺序处理其结果。<br>CompletionService将<strong>Executor和BlockingQueue</strong>结合在一起。<br><strong>ExecutorCompletionService</strong>是CompletionService实现类。计算完成后，调用FutureTask的<strong>done</strong>方法。当提交任务时，包装任务为一个<strong>QueueingFuture</strong>（FutureTask的子类），改写子类的done方法。将结果放入<strong>BlockingQueue</strong>中。<br>take或poll方法委托给lockingQueue，阻塞式获得队列中完成的任务的Future结果。</p>
+<h3 id="Executors"><a href="#Executors" class="headerlink" title="Executors"></a>Executors</h3><p>Executors提供了一系列<strong>工厂方法</strong>用于创先线程池，返回的线程池都实现了ExecutorService接口。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">public static ExecutorService newFixedThreadPool(int nThreads)</span><br></pre></td></tr></table></figure>
+<p>创建固定数目线程的线程池。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">public static ExecutorService newCachedThreadPool()</span><br></pre></td></tr></table></figure>
+<p>创建一个可缓存的线程池，调用execute将重用以前构造的线程（如果线程可用）。如果现有线程没有可用的，则创建一个新线   程并添加到池中。终止并从缓存中移除那些已有 60 秒钟未被使用的线程。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">public static ExecutorService newSingleThreadExecutor()</span><br></pre></td></tr></table></figure>
+<p>创建一个单线程化的Executor。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">public static ScheduledExecutorService newScheduledThreadPool(int corePoolSize)</span><br></pre></td></tr></table></figure>
+<p>创建一个支持定时及周期性的任务执行的线程池，多数情况下可用来替代Timer类。</p>
+<p>一般来说，<strong>CachedTheadPool</strong>在程序执行过程中通常会创建与所需数量相同的线程，然后在它回收旧线程时停止创建新线程，因此它是合理的Executor的首选，只有当这种方式会引发问题时（比如需要大量长时间面向连接的线程时），才需要考虑用FixedThreadPool。</p>
+<h3 id="ThreadPoolExecutor"><a href="#ThreadPoolExecutor" class="headerlink" title="ThreadPoolExecutor"></a>ThreadPoolExecutor</h3><p>newFixedThreadPool、newCachedThreadPool、newSingleThreadExecutor均返回<strong>ThreadPoolExecutor</strong>对象。该类继承自<strong>AbstractExecutorService</strong>，AbstractExecutorService继承自ThreadPoolExecutor。<br>ThreadPoolExecutor构造函数的参数如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">public ThreadPoolExecutor(int corePoolSize,</span><br><span class="line">                            int maximumPoolSize,</span><br><span class="line">                            long keepAliveTime,</span><br><span class="line">                            TimeUnit unit,</span><br><span class="line">                            BlockingQueue&lt;Runnable&gt; workQueue,</span><br><span class="line">                            ThreadFactory threadFactory,</span><br><span class="line">                            RejectedExecutionHandler handler)</span><br></pre></td></tr></table></figure>
 
-<p>Thread中定义如下的threadLocals。threadLocals作为Thread中的属性，是一个特殊的ThreadLocalMap 。每一个线程管理自己的threadLocals，key值是<strong>ThreadLocal</strong>实例，而value值这是我们设置的值。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ThreadLocal.ThreadLocalMap threadLocals &#x3D; null;</span><br></pre></td></tr></table></figure>
-
-<h2 id="ThreadLocal内部方法实现"><a href="#ThreadLocal内部方法实现" class="headerlink" title="ThreadLocal内部方法实现"></a>ThreadLocal内部方法实现</h2><p>initialValue。该函数在调用get函数的时候会第一次调用，但是如果一开始就调用了set函数，则该函数不会被调用。通常该函数只会被调用一次，除非手动调用了remove函数之后又调用get函数，这种情况下，get函数中还是会调用initialValue函数。该函数是protected类型的，很显然是建议在子类重载该函数的，所以通常该函数都会以匿名内部类的形式被重载，以指定初始值，</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">protected T initialValue() &#123;</span><br><span class="line">    return null;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>get。该函数用来获取与当前线程关联的ThreadLocal的值，如果当前线程没有该ThreadLocal的值，则调用initialValue函数获取初始值返回。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">public T get() &#123;</span><br><span class="line">    Thread t &#x3D; Thread.currentThread();</span><br><span class="line">    ThreadLocalMap map &#x3D; getMap(t);</span><br><span class="line">    if (map !&#x3D; null) &#123;</span><br><span class="line">        &#x2F;&#x2F;查找map中以当前threadlocal为键的键值对，如果没有返回null</span><br><span class="line">        ThreadLocalMap.Entry e &#x3D; map.getEntry(this);</span><br><span class="line">        if (e !&#x3D; null) &#123;</span><br><span class="line">            @SuppressWarnings(&quot;unchecked&quot;)</span><br><span class="line">            T result &#x3D; (T)e.value;</span><br><span class="line">            return result;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    &#x2F;&#x2F;没有map或者没有找到对应的键的键值对，则创建map或设置初始值</span><br><span class="line">    return setInitialValue();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>getMap。返回丹当前线程的threadLocals。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ThreadLocalMap getMap(Thread t) &#123;</span><br><span class="line">    return t.threadLocals;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>setInitialValue</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">private T setInitialValue() &#123;</span><br><span class="line">    &#x2F;&#x2F;initialValue返回值作为初始值</span><br><span class="line">    T value &#x3D; initialValue();</span><br><span class="line">    Thread t &#x3D; Thread.currentThread();</span><br><span class="line">    ThreadLocalMap map &#x3D; getMap(t);</span><br><span class="line">    &#x2F;&#x2F;map存在则插入键值对</span><br><span class="line">    if (map !&#x3D; null) &#123;</span><br><span class="line">        map.set(this, value);</span><br><span class="line">    &#125; </span><br><span class="line">    &#x2F;&#x2F;map不存在创建map，并初始化键值对（this，value）</span><br><span class="line">    else &#123;</span><br><span class="line">        createMap(t, value);</span><br><span class="line">    &#125;</span><br><span class="line">    if (this instanceof TerminatingThreadLocal) &#123;</span><br><span class="line">        TerminatingThreadLocal.register((TerminatingThreadLocal&lt;?&gt;) this);</span><br><span class="line">    &#125;</span><br><span class="line">    return value;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>createMap</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">void createMap(Thread t, T firstValue) &#123;</span><br><span class="line">    &#x2F;&#x2F;map不存在创建map，并初始化键值对（this，value）</span><br><span class="line">    t.threadLocals &#x3D; new ThreadLocalMap(this, firstValue);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>set</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">public void set(T value) &#123;</span><br><span class="line">    Thread t &#x3D; Thread.currentThread();</span><br><span class="line">    ThreadLocalMap map &#x3D; getMap(t);</span><br><span class="line">    if (map !&#x3D; null) &#123;</span><br><span class="line">        map.set(this, value);</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        createMap(t, value);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>remove</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">public void remove() &#123;</span><br><span class="line">        ThreadLocalMap m &#x3D; getMap(Thread.currentThread());</span><br><span class="line">        if (m !&#x3D; null) &#123;</span><br><span class="line">            m.remove(this);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="延伸"><a href="#延伸" class="headerlink" title="延伸"></a>延伸</h2><p>ThreadLocalMap是使用ThreadLocal的<strong>弱引用</strong>作为Key。</p>
-
+<p>任何<strong>BlockingQueue</strong>可用于传送和保留提交的任务。 这个队列的使用与池大小相互作用：<br>如果少于corePoolSize线程正在运行，Executor总是喜欢添加一个新线程，而不是排队。<br>如果corePoolSize或更多的线程正在运行，Executor总是喜欢排队请求而不是添加一个新的线程。<br>如果请求无法排队，则会创建一个新线程，除非这将超出maximumPoolSize，否则任务将被拒绝。</p>
+<h4 id="排队策略"><a href="#排队策略" class="headerlink" title="排队策略"></a>排队策略</h4><p>排队有三种一般策略：<br><strong>直接切换</strong> 一个工作队列的一个很好的默认选择是一个SynchronousQueue ，将任务交给线程，无需另外控制。 在这里，如果没有线程可以立即运行，那么尝试排队任务会失败，因此将构建一个新的线程。 处理可能具有内部依赖关系的请求集时，此策略可避免锁定。 直接切换通常需要无限制的maximumPoolSizes，以避免拒绝新提交的任务。 这反过来允许无限线程增长的可能性，当命令继续以平均速度比他们可以处理的速度更快地到达时。<br><strong>无界队列</strong> 使用无界队列（例如LinkedBlockingQueue没有预定容量）会导致新的任务，在队列中等待，当所有corePoolSize线程都很忙。 因此，不会再创建corePoolSize线程。 （因此，最大值大小的值没有任何影响。）每个任务完全独立于其他任务时，这可能是适当的，因此任务不会影响其他执行; 例如，在网页服务器中。 虽然这种排队风格可以有助于平滑瞬态突发的请求，但是当命令继续达到的平均速度比可以处理的速度更快时，它承认无界工作队列增长的可能性。<br><strong>有边界的队列</strong> 有限队列（例如， ArrayBlockingQueue ）有助于在使用有限maxPoolSizes时防止资源耗尽，但可能更难调整和控制。 队列大小和最大池大小可能彼此交易：使用大队列和小型池可以最大限度地减少CPU使用率，OS资源和上下文切换开销，但可能导致人为的低吞吐量。 如果任务频繁阻塞（例如，如果它们是I / O绑定），则系统可能能够安排比您允许的更多线程的时间。 使用小型队列通常需要较大的池大小，这样可以使CPU繁忙，但可能会遇到不可接受的调度开销，这也降低了吞吐量。</p>
+<h4 id="典型的实现"><a href="#典型的实现" class="headerlink" title="典型的实现"></a>典型的实现</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">public static ExecutorService newSingleThreadExecutor() &#123;</span><br><span class="line">    return new FinalizableDelegatedExecutorService</span><br><span class="line">        (new ThreadPoolExecutor(1, 1,</span><br><span class="line">                                0L, TimeUnit.MILLISECONDS,</span><br><span class="line">                                new LinkedBlockingQueue&lt;Runnable&gt;()));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public static ExecutorService newFixedThreadPool(int nThreads) &#123;</span><br><span class="line">    return new ThreadPoolExecutor(nThreads, nThreads,</span><br><span class="line">                                    0L, TimeUnit.MILLISECONDS,</span><br><span class="line">                                    new LinkedBlockingQueue&lt;Runnable&gt;());</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public static ExecutorService newCachedThreadPool() &#123;</span><br><span class="line">    return new ThreadPoolExecutor(0, Integer.MAX_VALUE,</span><br><span class="line">                                    60L, TimeUnit.SECONDS,</span><br><span class="line">                                    new SynchronousQueue&lt;Runnable&gt;());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
     </div>
 
     
@@ -341,11 +331,8 @@
 
       <footer class="post-footer">
           <div class="post-tags">
+              <a href="/tags/Executor%E6%A1%86%E6%9E%B6/" rel="tag"># Executor框架</a>
               <a href="/tags/JAVA%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E5%AE%9E%E6%88%98/" rel="tag"># JAVA并发编程实战</a>
-              <a href="/tags/%E5%B9%B6%E5%8F%91/" rel="tag"># 并发</a>
-              <a href="/tags/JAVA%E6%BA%90%E7%A0%81/" rel="tag"># JAVA源码</a>
-              <a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" rel="tag"># 多线程</a>
-              <a href="/tags/%E7%BA%BF%E7%A8%8B%E9%9A%94%E7%A6%BB/" rel="tag"># 线程隔离</a>
           </div>
 
         
@@ -354,12 +341,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2020/03/29/%E9%82%A3%E4%BA%9B%E5%9F%BA%E4%BA%8Enext%E6%90%AD%E5%BB%BAhexo%E6%88%91%E8%B8%A9%E8%BF%87%E7%9A%84%E5%9D%91/" rel="prev" title="那些基于next搭建hexo我踩过的坑">
-      <i class="fa fa-chevron-left"></i> 那些基于next搭建hexo我踩过的坑
+    <a href="/2020/04/05/HashMap%E6%BA%90%E7%A0%81%E6%8E%A2%E7%A9%B6/" rel="prev" title="HashMap源码探究">
+      <i class="fa fa-chevron-left"></i> HashMap源码探究
     </a></div>
       <div class="post-nav-item">
-    <a href="/2020/03/29/Spring%E5%88%9D%E6%8E%A2-1/" rel="next" title="Spring初探-1">
-      Spring初探-1 <i class="fa fa-chevron-right"></i>
+    <a href="/2020/04/05/%E5%9B%9B%E7%A7%8D%E7%BA%BF%E7%A8%8B%E5%88%9B%E5%BB%BA%E6%96%B9%E5%BC%8F/" rel="next" title="四种线程创建方式">
+      四种线程创建方式 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -421,7 +408,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#ThreadLocal简介"><span class="nav-number">1.</span> <span class="nav-text">ThreadLocal简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#与Thread、ThreadLocalMap的联系"><span class="nav-number">2.</span> <span class="nav-text">与Thread、ThreadLocalMap的联系</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ThreadLocal内部方法实现"><span class="nav-number">3.</span> <span class="nav-text">ThreadLocal内部方法实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#延伸"><span class="nav-number">4.</span> <span class="nav-text">延伸</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Executor框架"><span class="nav-number">1.</span> <span class="nav-text">Executor框架</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Executor生命周期"><span class="nav-number">2.</span> <span class="nav-text">Executor生命周期</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ExecutorService的invokeAll方法"><span class="nav-number">2.1.</span> <span class="nav-text">ExecutorService的invokeAll方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CompletionService"><span class="nav-number">2.2.</span> <span class="nav-text">CompletionService</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Executors"><span class="nav-number">2.3.</span> <span class="nav-text">Executors</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ThreadPoolExecutor"><span class="nav-number">2.4.</span> <span class="nav-text">ThreadPoolExecutor</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#排队策略"><span class="nav-number">2.4.1.</span> <span class="nav-text">排队策略</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#典型的实现"><span class="nav-number">2.4.2.</span> <span class="nav-text">典型的实现</span></a></li></ol></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 

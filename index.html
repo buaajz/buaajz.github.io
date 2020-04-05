@@ -193,6 +193,628 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://buaajz.github.io/2020/04/05/FutrueTask%E6%8E%A2%E7%A9%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/UserImage.jpeg">
+      <meta itemprop="name" content="金年轻">
+      <meta itemprop="description" content="金年轻的个人博客，欢迎交流">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="金年轻">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/04/05/FutrueTask%E6%8E%A2%E7%A9%B6/" class="post-title-link" itemprop="url">FutrueTask探究</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-04-05 15:17:03" itemprop="dateCreated datePublished" datetime="2020-04-05T15:17:03+08:00">2020-04-05</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80/" itemprop="url" rel="index"><span itemprop="name">语言基础</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80/JAVA%E5%B9%B6%E5%8F%91/" itemprop="url" rel="index"><span itemprop="name">JAVA并发</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/04/05/FutrueTask%E6%8E%A2%E7%A9%B6/" class="post-meta-item leancloud_visitors" data-flag-title="FutrueTask探究" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2020/04/05/FutrueTask%E6%8E%A2%E7%A9%B6/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/04/05/FutrueTask%E6%8E%A2%E7%A9%B6/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>1.6k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>1 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>使用FutureTask实现闭锁。提前加载稍后需要的数据。FutureTask继承了<strong>Future和Runnable</strong>接口。</p>
+<p>如下段代码，使用FutureTask可以实现闭锁，即可以提前加载需要的数据，在<strong>get</strong>时阻塞，直到运算完成。</p>
+<p>最好的实现是实现<strong>Thread</strong>，创建线程完成。当然直接调用<strong>run</strong>方法可以运行，但没有创建线程。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br></pre></td><td class="code"><pre><span class="line">public class futureTaskDemo &#123;</span><br><span class="line"></span><br><span class="line">    &#x2F;*</span><br><span class="line">    《JAVA并发编程实战》第五章：</span><br><span class="line">    使用FutureTask实现闭锁。提前加载稍后需要的数据。</span><br><span class="line">     *&#x2F;</span><br><span class="line"></span><br><span class="line">    private final FutureTask&lt;Integer&gt; futureTask &#x3D; new FutureTask&lt;Integer&gt;(new Callable&lt;Integer&gt;() &#123;</span><br><span class="line">        public Integer call() throws Exception &#123;</span><br><span class="line">            return printDataTest();</span><br><span class="line">            &#x2F;&#x2F;return null;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    private final Thread thread &#x3D; new Thread(futureTask);</span><br><span class="line"></span><br><span class="line">    public void start ()&#123;</span><br><span class="line">        thread.start();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private int printDataTest()</span><br><span class="line">    &#123;</span><br><span class="line">        System.out.println(&quot;futuretesk开始了&quot;);</span><br><span class="line">        try &#123;</span><br><span class="line">            Thread.sleep(3000);</span><br><span class="line">        &#125; catch (InterruptedException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(&quot;futuretesk结束了&quot;);</span><br><span class="line">        return 1;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    &#x2F;**</span><br><span class="line">     *</span><br><span class="line">     * 测试FutureTask,run方法</span><br><span class="line">     *&#x2F;</span><br><span class="line">    @Test</span><br><span class="line">    public void futureTaskTest()</span><br><span class="line">    &#123;</span><br><span class="line">        futureTask.run();</span><br><span class="line">        try &#123;</span><br><span class="line">            futureTask.get();</span><br><span class="line">            System.out.println(&quot;结束&quot;);</span><br><span class="line">        &#125; catch (InterruptedException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; catch (ExecutionException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;**</span><br><span class="line">     *</span><br><span class="line">     * 测试FutureTask,Thread</span><br><span class="line">     *&#x2F;</span><br><span class="line">    @Test</span><br><span class="line">    public void futureTaskTestWithThread()</span><br><span class="line">    &#123;</span><br><span class="line">        start();</span><br><span class="line">        try &#123;</span><br><span class="line">            futureTask.get();</span><br><span class="line">            System.out.println(&quot;结束&quot;);</span><br><span class="line">        &#125; catch (InterruptedException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; catch (ExecutionException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://buaajz.github.io/2020/04/05/JAVA%E5%B9%B6%E5%8F%91%E5%AE%B9%E5%99%A8%E7%B1%BB%E6%8E%A2%E7%A9%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/UserImage.jpeg">
+      <meta itemprop="name" content="金年轻">
+      <meta itemprop="description" content="金年轻的个人博客，欢迎交流">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="金年轻">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/04/05/JAVA%E5%B9%B6%E5%8F%91%E5%AE%B9%E5%99%A8%E7%B1%BB%E6%8E%A2%E7%A9%B6/" class="post-title-link" itemprop="url">JAVA并发容器类探究</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-04-05 15:16:26" itemprop="dateCreated datePublished" datetime="2020-04-05T15:16:26+08:00">2020-04-05</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80/" itemprop="url" rel="index"><span itemprop="name">语言基础</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80/JAVA%E5%B9%B6%E5%8F%91/" itemprop="url" rel="index"><span itemprop="name">JAVA并发</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/04/05/JAVA%E5%B9%B6%E5%8F%91%E5%AE%B9%E5%99%A8%E7%B1%BB%E6%8E%A2%E7%A9%B6/" class="post-meta-item leancloud_visitors" data-flag-title="JAVA并发容器类探究" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2020/04/05/JAVA%E5%B9%B6%E5%8F%91%E5%AE%B9%E5%99%A8%E7%B1%BB%E6%8E%A2%E7%A9%B6/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/04/05/JAVA%E5%B9%B6%E5%8F%91%E5%AE%B9%E5%99%A8%E7%B1%BB%E6%8E%A2%E7%A9%B6/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>3.9k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>4 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="同步容器类"><a href="#同步容器类" class="headerlink" title="同步容器类"></a>同步容器类</h2><p><strong>Vector Hashtable Collections.synchronizedXxx</strong><br>实现线程安全的方式：将状态封装起来，并对每个公有方法进行同步，每次只有一个线程可以访问容器的状态</p>
+<p>同步容器类自身线程安全，但可能需要客户端额外加锁。<br>在迭代的时候会遇到问题。容器类的迭代使用Iterator，如果迭代期间没有加锁，并发修改容器，会抛出<strong>ConcurrentModificationException</strong>。<br>同步容器类表现行为是<strong>fail-fast</strong>。</p>
+<p>同时要注意隐藏迭代器。toString、hashCode、equals方法等会间接进行迭代操作。</p>
+<h2 id="并发容器类"><a href="#并发容器类" class="headerlink" title="并发容器类"></a>并发容器类</h2><p>同步容器类将所有对容器状态的访问都串行化，实现线程安全。眼中降低并发性，造成吞吐量降低。<br>并发容器针对多线程并发访问设计。Java5.0增加<strong>ConcurrentHashMap、CopyOnWriteArrayList、Queue、BlockingQueue</strong>。<br>Java6.0引入<strong>ConcurrentSkipListMap、ConcurrentSkipListSet</strong>。<br>迭代器具有弱一致性（Weakly Consistent）。并非<strong>fail-fast</strong>。可以容忍并发的修改。<br>并发容器使用了与同步容器完全不同的加锁策略来提供更高的并发性和伸缩性。<br>例如在 ConcurrentHashMap 中采用了一种粒度更细的加锁机制，可以称为分段锁（Lock Striping），在这种锁机制下，允许任意数量的读线程并发地访问 map，并且执行读操作的线程和写操作的线程也可以并发的访问 map，同时允许一定数量的写操作线程并发地修改 map，所以它可以在并发环境下实现更高的吞吐量。</p>
+<p>没有实现加锁实现独占访问。</p>
+<h3 id="ConcurrentHashMap"><a href="#ConcurrentHashMap" class="headerlink" title="ConcurrentHashMap"></a>ConcurrentHashMap</h3><p>Map中的put方法：<br>如果map中包含类该键的映射，则替换旧值，并返回旧值。<br>如果map中不包含该键的映射，则写入。返回null。同时返回null也可表示之前该键对应的值为null。</p>
+<p>ConcurrentHashMap中的<strong>putIfAbsent</strong>方法：<br>如果指定的键尚未与值相关联，请将其与给定值相关联。 这相当于</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">if (!map.containsKey(key)) return map.put(key, value); else return map.get(key);</span><br></pre></td></tr></table></figure>
+<p>返回值：与指定键相关联的上一个值，如果没有键的映射，返回null。</p>
+<h2 id="opyOnWriteArrayList"><a href="#opyOnWriteArrayList" class="headerlink" title="opyOnWriteArrayList"></a>opyOnWriteArrayList</h2><p>CopyOnWriteArrayList：只要正确发布一个事实不可变的对象，访问该对象就不需要进一步同步。CopyOnWriteArrayList利用底层数组的copy实现该安全机制。<br>每次修改时，都会创建并重新发布新的容器副本，见add源码。<br>迭代时调用COWIterator，传入底层数组的引用。在迭代器内部类复制原始数组，所以迭代器用到的数组不会修改，所以可以实现多线程同时对容器进行迭代。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">public Iterator&lt;E&gt; iterator() &#123;</span><br><span class="line">    return new COWIterator&lt;E&gt;(getArray(), 0);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public boolean add(E e) &#123;</span><br><span class="line">    synchronized (lock) &#123;</span><br><span class="line">        Object[] es &#x3D; getArray();</span><br><span class="line">        int len &#x3D; es.length;</span><br><span class="line">        es &#x3D; Arrays.copyOf(es, len + 1);</span><br><span class="line">        es[len] &#x3D; e;</span><br><span class="line">        setArray(es);</span><br><span class="line">        return true;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">static final class COWIterator&lt;E&gt; implements ListIterator&lt;E&gt; &#123;</span><br><span class="line">    &#x2F;** Snapshot of the array *&#x2F;</span><br><span class="line">    private final Object[] snapshot;</span><br><span class="line">    &#x2F;**</span><br><span class="line">        * Index of element to be returned by subsequent call to next.</span><br><span class="line">        *&#x2F;</span><br><span class="line">    private int cursor;</span><br><span class="line"></span><br><span class="line">    COWIterator(Object[] es, int initialCursor) &#123;</span><br><span class="line">        cursor &#x3D; initialCursor;</span><br><span class="line">        snapshot &#x3D; es;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public boolean hasNext() &#123;</span><br><span class="line">        return cursor &lt; snapshot.length;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public boolean hasPrevious() &#123;</span><br><span class="line">        return cursor &gt; 0;</span><br><span class="line">    &#125;</span><br><span class="line">...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="Queue"><a href="#Queue" class="headerlink" title="Queue"></a>Queue</h3><p>设计用于在处理之前保留元素的集合。 除了基本的Collection操作之外，队列还提供额外的插入，提取和检查操作。 这些方法中的每一种都有两种形式：如果操作失败，则抛出一个异常，另一种返回一个特殊值（ null或false ，具体取决于操作）。<br>队列通常但不一定是以FIFO（先进先出）方式排序元素。<br>PriorityQueue优先级队列的元素根据它们的有序natural ordering ，或由一个Comparator在队列构造的时候提供，这取决于所使用的构造方法。 优先队列不允许null元素。 依靠自然排序的优先级队列也不允许插入不可比较的对象.<br>如果可能， offer方法插入一个元素，否则返回false 。<br>remove()和poll()方法删除并返回队列的头。 从队列中删除哪个元素是队列排序策略的一个功能，它与实现不同。 remove()和poll()方法在队列为空时的行为不同： remove()方法抛出异常，而poll()方法返回null 。<br>element()和peek()方法返回，但不要删除，头的队列。peek()方法中，如果此队列为空，则返回 null 。<br>Queue实现通常不允许插入null元素。</p>
+<h3 id="BlockingQueue"><a href="#BlockingQueue" class="headerlink" title="BlockingQueue"></a>BlockingQueue</h3><p>支持在检索元素时等待队列变为非空的操作，并且在存储元素时等待队列中的空间变得可用。<br>不接受null元素。<br>容量有限。<br>被设计为主要用于<strong>生产者 - 消费者队列</strong>。<br>线程安全。<br>put():将指定的元素插入到此队列中，等待空格可用。<br>take():检索并删除此队列的头，如有必要，等待元素可用。</p>
+<p>抛出时，表示该方法是个阻塞方法。<br>当在代码中调用了一个将抛出InterruptedException异常的方法时，该方法就成为了阻塞方法。必须处理中断的响应。两种基本方法：<br>1）传递InterruptedException。避开异常，可以不捕获该异常，抛出。或者捕获该异常后，执行简单清理工作后再次抛出异常。<br>2）恢复中断。对于不能抛出InterruptedException异常的方法，比如时Runnable的实现类时。必须捕获异常，并调用当前线程的interrupt方法恢复中断状态。这样调用栈中更高层的代码将看到引发中断。</p>
+<p>不能捕获InterruptedException中断但是不做任何处理。这样高层代码无法对中断采取措施。</p>
+<h2 id="同步工具类"><a href="#同步工具类" class="headerlink" title="同步工具类"></a>同步工具类</h2><p>BlockingQueue、闭锁（Latch）、FutureTask、信号量（Semaphore）、栅栏（Barrier）</p>
+<h3 id="闭锁（Latch）"><a href="#闭锁（Latch）" class="headerlink" title="闭锁（Latch）"></a>闭锁（Latch）</h3><p>实现类：CountDownLatch。<br>允许一个或多个线程等待直到在其他线程中执行的一组操作完成的同步辅助。<br>给定的计数初始化。 await方法阻塞，直到由于countDown()方法的调用而导致当前计数达到零，之后所有等待线程被释放，并且任何后续的await 调用立即返回。 这是一个一次性的现象 - 计数无法重置。<br>是一种通用的同步工具，可用于多种用途。<br>示例用法1：这是一组类，其中一组工作线程使用两个倒计时锁存器：</p>
+<ul>
+<li>第一个是启动信号，防止任何工作人员进入，直到驾驶员准备好继续前进;</li>
+<li>第二个是完成信号，允许司机等到所有的工作人员完成。<br>示例用法2：将问题划分为N个部分，用一个Runnable来描述每个部分，该Runnable执行该部分并在锁存器上倒计时，并将所有Runnables排队到执行器。 当所有子部分完成时，协调线程将能够通过等待。</li>
+</ul>
+<h3 id="信号量（Semaphore）"><a href="#信号量（Semaphore）" class="headerlink" title="信号量（Semaphore）"></a>信号量（Semaphore）</h3><p>在概念上，信号量维持一组许可证。 如果有必要，每个acquire()都会阻塞，直到许可证可用，然后才能使用它。 每个release()添加许可证，潜在地释放阻塞获取方。 但是，没有使用实际的许可证对象; Semaphore只保留可用数量的计数，并相应地执行。<br>信号量通常用于限制线程数，而不是访问某些（物理或逻辑）资源。<br>此类的构造函数可选择接受公平参数。 当设置为false时，此类不会保证线程获取许可的顺序。当公平设置为真时，信号量保证调用acquire方法的线程被选择以按照它们调用这些方法的顺序获得许可（先进先出; FIFO）。<br>信号量被初始化为一个，并且被使用，使得它只有至多一个允许可用，可以用作互斥锁。 这通常被称为二进制信号量 ，因为它只有两个状态：一个许可证可用，或零个许可证可用。</p>
+<h3 id="栅栏（Barrier）"><a href="#栅栏（Barrier）" class="headerlink" title="栅栏（Barrier）"></a>栅栏（Barrier）</h3><p>实现类：CyclicBarrier。<br>允许一组线程全部等待彼此达到共同屏障点的同步辅助。 循环阻塞在涉及固定大小的线程方的程序中很有用，这些线程必须偶尔等待彼此。 屏障被称为循环 ，因为它可以在等待的线程被释放之后重新使用。<br>CyclicBarrier支持一个可选的Runnable命令，每个屏障点运行一次，调用await()。最后一个线程到达之后，Runnable中的方法执行。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://buaajz.github.io/2020/04/05/%E5%9B%9B%E7%A7%8D%E7%BA%BF%E7%A8%8B%E5%88%9B%E5%BB%BA%E6%96%B9%E5%BC%8F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/UserImage.jpeg">
+      <meta itemprop="name" content="金年轻">
+      <meta itemprop="description" content="金年轻的个人博客，欢迎交流">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="金年轻">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/04/05/%E5%9B%9B%E7%A7%8D%E7%BA%BF%E7%A8%8B%E5%88%9B%E5%BB%BA%E6%96%B9%E5%BC%8F/" class="post-title-link" itemprop="url">四种线程创建方式</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-04-05 15:15:57" itemprop="dateCreated datePublished" datetime="2020-04-05T15:15:57+08:00">2020-04-05</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80/" itemprop="url" rel="index"><span itemprop="name">语言基础</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80/JAVA%E5%B9%B6%E5%8F%91/" itemprop="url" rel="index"><span itemprop="name">JAVA并发</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/04/05/%E5%9B%9B%E7%A7%8D%E7%BA%BF%E7%A8%8B%E5%88%9B%E5%BB%BA%E6%96%B9%E5%BC%8F/" class="post-meta-item leancloud_visitors" data-flag-title="四种线程创建方式" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2020/04/05/%E5%9B%9B%E7%A7%8D%E7%BA%BF%E7%A8%8B%E5%88%9B%E5%BB%BA%E6%96%B9%E5%BC%8F/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/04/05/%E5%9B%9B%E7%A7%8D%E7%BA%BF%E7%A8%8B%E5%88%9B%E5%BB%BA%E6%96%B9%E5%BC%8F/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>3.4k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>3 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="java中创建线程的四种方式"><a href="#java中创建线程的四种方式" class="headerlink" title="java中创建线程的四种方式"></a>java中创建线程的四种方式</h2><p>通常可以通过继承Thread和实现Runnable两种方式创建线程。启动线程需要用start方法。</p>
+<blockquote>
+<p>1、继承Thread类创建线程<br>2、实现Runnable接口创建线程<br>3、使用Callable和Future创建线程<br>4、使用线程池例如用Executor框架</p>
+</blockquote>
+<h2 id="创建方式实例"><a href="#创建方式实例" class="headerlink" title="创建方式实例"></a>创建方式实例</h2><h3 id="继承Thread类创建线程"><a href="#继承Thread类创建线程" class="headerlink" title="继承Thread类创建线程"></a>继承Thread类创建线程</h3><p>定义Thread类的子类，并重写该类的run()方法，该方法的方法体就是线程需要完成的任务，run()方法也称为线程执行体。<br>创建Thread子类的实例，也就是创建了线程对象.<br>启动线程，即调用线程的start()方法.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;**</span><br><span class="line">    * 创建方式1：继承Thread类</span><br><span class="line">    *&#x2F;</span><br><span class="line">public class myThread1 extends Thread</span><br><span class="line">&#123;</span><br><span class="line">    public void run()</span><br><span class="line">    &#123;</span><br><span class="line">        System.out.println(&quot;thread1创建成功！&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;**</span><br><span class="line">    * 调用方式1</span><br><span class="line">    *&#x2F;</span><br><span class="line">@Test</span><br><span class="line">public void threadCreate1()</span><br><span class="line">&#123;</span><br><span class="line">    myThread1 thread1 &#x3D; new myThread1();</span><br><span class="line">    thread1.start();</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F;new myThread1().start();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="实现Runnable接口创建线程"><a href="#实现Runnable接口创建线程" class="headerlink" title="实现Runnable接口创建线程"></a>实现Runnable接口创建线程</h3><p>定义Runnable接口的实现类，一样要重写run()方法，这个run（）方法和Thread中的run()方法一样是线程的执行体<br>创建Runnable实现类的实例，并用这个实例作为Thread的target来创建Thread对象，这个Thread对象才是真正的线程对象<br>第三部依然是通过调用线程对象的start()方法来启动线程</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;**</span><br><span class="line">    * 创建方式2：实现Runnable接口</span><br><span class="line">    *&#x2F;</span><br><span class="line">public class myThread2 implements Runnable</span><br><span class="line">&#123;</span><br><span class="line">    public void run()</span><br><span class="line">    &#123;</span><br><span class="line">        System.out.println(&quot;thread2创建成功！&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;**</span><br><span class="line">    * 调用方式2</span><br><span class="line">    *&#x2F;</span><br><span class="line">@Test</span><br><span class="line">public void threadCreate2()</span><br><span class="line">&#123;</span><br><span class="line">    new Thread(new myThread2()).start();</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F;此方式只是创建runnable对象，调用run方法，并没有创建线程</span><br><span class="line">    &#x2F;&#x2F;new myThread2().run();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="使用Callable和Future创建线程"><a href="#使用Callable和Future创建线程" class="headerlink" title="使用Callable和Future创建线程"></a>使用Callable和Future创建线程</h3><p>创建Callable接口的实现类，并实现call()方法，然后创建该实现类的实例（从java8开始可以直接使用Lambda表达式创建Callable对象）<br>使用FutureTask类来包装Callable对象，该FutureTask对象封装了Callable对象的call()方法的返回值<br>使用FutureTask对象作为Thread对象的target创建并启动线程（因为FutureTask实现了Runnable接口）<br>调用FutureTask对象的get()方法来获得子线程执行结束后的返回值</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;**</span><br><span class="line">    * 创建方式3：FutureTask</span><br><span class="line">    *&#x2F;</span><br><span class="line">public class myThread3 implements Runnable</span><br><span class="line">&#123;</span><br><span class="line">    public void run()</span><br><span class="line">    &#123;</span><br><span class="line">        System.out.println(&quot;thread2创建成功！&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;**</span><br><span class="line">    * 调用方式3</span><br><span class="line">    *&#x2F;</span><br><span class="line">@Test</span><br><span class="line">public void threadCreate3()</span><br><span class="line">&#123;</span><br><span class="line">    FutureTask&lt;Integer&gt; futureTask &#x3D; new FutureTask&lt;Integer&gt;(new Callable&lt;Integer&gt;() &#123;</span><br><span class="line">        @Override</span><br><span class="line">        public Integer call() throws Exception &#123;</span><br><span class="line">            System.out.println(&quot;thread3创建成功！&quot;);</span><br><span class="line">            try &#123;</span><br><span class="line">                Thread.sleep(3000);</span><br><span class="line">            &#125; catch (InterruptedException e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line">            System.out.println(&quot;thread3结束了&quot;);</span><br><span class="line">            return 1;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    Thread thread3 &#x3D; new Thread(futureTask);</span><br><span class="line"></span><br><span class="line">    thread3.start();</span><br><span class="line"></span><br><span class="line">    try &#123;</span><br><span class="line">        futureTask.get();</span><br><span class="line">        System.out.println(&quot;结束&quot;);</span><br><span class="line">    &#125; catch (InterruptedException e) &#123;</span><br><span class="line">        e.printStackTrace();</span><br><span class="line">    &#125; catch (ExecutionException e) &#123;</span><br><span class="line">        e.printStackTrace();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="使用线程池例如用Executor框架"><a href="#使用线程池例如用Executor框架" class="headerlink" title="使用线程池例如用Executor框架"></a>使用线程池例如用Executor框架</h3><p>该部分在Executor框架中展开阐述。</p>
+<h2 id="Runnable创建线程的优势"><a href="#Runnable创建线程的优势" class="headerlink" title="Runnable创建线程的优势"></a>Runnable创建线程的优势</h2><p>建议使用Runnable来实现多线程。<br>1、<strong>Runnable适合于多个相同程序代码线程去处理统一资源的情况</strong>，把虚拟的cpu（线程）同程序的代码，数据有效分离，较好体现面向对象的编程的思想</p>
+<p>2、<strong>Runnable可以避免由于java的单继承机制带来的局限</strong>。可以再继承其他类的同时，还能实现多线程的功能。</p>
+<p>3、Runnable能增加程序的健壮性。<strong>代码能够被多个线程共享</strong>。</p>
+<p>继承Thread方式创建线程，线程之间不能做资源共享。Runnable接口方式创建线程，通过下列方式启动线程，每启动一次都会创建一个test相关的线程，所以可以实现资源共享。几个线程共享Runnable接口实现类中的资源。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">public class ThreadDemo</span><br><span class="line">&#123;</span><br><span class="line">    public static void main(String []args)</span><br><span class="line">    &#123;</span><br><span class="line">        ThreadTest test&#x3D;new ThreadTest();</span><br><span class="line">        new Thread(test).start();</span><br><span class="line">        new Thread(test).start();</span><br><span class="line">        new Thread(test).start();</span><br><span class="line">        new Thread(test).start();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">class ThreadTest implements Runnable</span><br><span class="line">&#123;</span><br><span class="line">    private int count&#x3D;10;</span><br><span class="line">    public void run()</span><br><span class="line">    &#123;</span><br><span class="line">        while(count&gt;0)</span><br><span class="line">        &#123;</span><br><span class="line">            System.out.println(Thread.currentThread().getName()+&quot;   &quot;+count--);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="run和start"><a href="#run和start" class="headerlink" title="run和start"></a>run和start</h2><p>关于调用run方法和start方法：</p>
+<p>1、start()方法:启动一个线程，调用该Runnable对象的run()方法，<strong>不能多次启动一个线程</strong>。</p>
+<p>2、run()方法:在本线程内调用该Runnable对象的run()方法，可以<strong>重复多次调用</strong>。</p>
+<p>3、用start()方法来启动线程，真正实现了<strong>多线程运行</strong>，这时无需等待run方法体代码执行完毕而直接继续执行下面的代码。只有调用start方法才是交给jvm管理，才是多线程。</p>
+<p>4、run()方法只是类的一个<strong>普通方法</strong>而已，如果直接调用Run方法，程序中依然只有主线程这一个线程，其程序执行路径还是只有一条，还是要顺序执行，要等待run方法体执行完毕后才可继续执行下面的代码。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://buaajz.github.io/2020/04/05/Executor%E6%A1%86%E6%9E%B6%E6%8E%A2%E7%A9%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/UserImage.jpeg">
+      <meta itemprop="name" content="金年轻">
+      <meta itemprop="description" content="金年轻的个人博客，欢迎交流">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="金年轻">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/04/05/Executor%E6%A1%86%E6%9E%B6%E6%8E%A2%E7%A9%B6/" class="post-title-link" itemprop="url">Executor框架探究</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-04-05 15:14:04" itemprop="dateCreated datePublished" datetime="2020-04-05T15:14:04+08:00">2020-04-05</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80/" itemprop="url" rel="index"><span itemprop="name">语言基础</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80/JAVA%E5%B9%B6%E5%8F%91/" itemprop="url" rel="index"><span itemprop="name">JAVA并发</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/04/05/Executor%E6%A1%86%E6%9E%B6%E6%8E%A2%E7%A9%B6/" class="post-meta-item leancloud_visitors" data-flag-title="Executor框架探究" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2020/04/05/Executor%E6%A1%86%E6%9E%B6%E6%8E%A2%E7%A9%B6/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/04/05/Executor%E6%A1%86%E6%9E%B6%E6%8E%A2%E7%A9%B6/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>4.2k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>4 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="Executor框架"><a href="#Executor框架" class="headerlink" title="Executor框架"></a>Executor框架</h2><p>Executor框架的最大优点是把任务的<strong>提交和执行解耦</strong>。要执行任务的人只需把Task描述清楚，然后提交即可。这个Task是怎么被执行的，被谁执行的，什么时候执行的，提交的人就不用关心了。具体点讲，提交一个Callable对象给ExecutorService（如最常用的线程池ThreadPoolExecutor），将得到一个Future对象，调用Future对象的get方法等待执行结果就好了。Executor框架的内部使用了线程池机制，它在java.util.cocurrent 包下，通过该框架来控制线程的启动、执行和关闭，可以简化并发编程的操作。<br>Executor框架包括：<strong>线程池，Executor，Executors，ExecutorService，CompletionService，Future，Callable</strong>等。<br>Executor接口中之定义了一个方法<strong>execute</strong>（Runnable command），该方法接收一个Runnable实例，它用来执行一个任务，任务即一个实现了Runnable接口的类。<br><strong>ExecutorService</strong>接口继承自Executor接口，它提供了更丰富的实现多线程的方法，比如，ExecutorService提供了关闭自己的方法，以及可为跟踪一个或多个异步任务执行状况而生成 Future 的方法。<br>可以通过多种方法创建Future来描述任务。ExecutorService中所有的<strong>submit</strong>方法都返回Future，从而将一个Runnable或者callable提交给Executor并得到一个Future来获取任务的执行结果或者取消任务。<br>还可以显示的为指定的Runnable或者callable实例化一个FutureTask。从java6开始ExecutorService可以改写newTaskFor方法，创建一个新的FutureTask。</p>
+<h2 id="Executor生命周期"><a href="#Executor生命周期" class="headerlink" title="Executor生命周期"></a>Executor生命周期</h2><p>可以调用ExecutorService的<strong>shutdown（）</strong>方法来平滑地关闭 ExecutorService，调用该方法后，将导致ExecutorService停止接受任何新的任务且等待已经提交的任务执行完成(已经提交的任务会分两类：一类是已经在执行的，另一类是还没有开始执行的)，当所有已经提交的任务执行完毕后将会关闭ExecutorService。因此我们一般用该接口来实现和管理多线程。<br>ExecutorService的生命周期包括三种状态：<strong>运行、关闭、终止</strong>。创建后便进入运行状态，当调用了shutdown（）方法时，便进入关闭状态，此时意味着ExecutorService不再接受新的任务，但它还在执行已经提交了的任务，当素有已经提交了的任务执行完后，便到达终止状态。如果不调用shutdown（）方法，ExecutorService会一直处在运行状态，不断接收新的任务，执行新的任务，服务器端一般不需要关闭它，保持一直运行即可。</p>
+<h3 id="ExecutorService的invokeAll方法"><a href="#ExecutorService的invokeAll方法" class="headerlink" title="ExecutorService的invokeAll方法"></a>ExecutorService的invokeAll方法</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;T&gt; List&lt;Future&lt;T&gt;&gt; invokeAll(Collection&lt;? extends Callable&lt;T&gt;&gt; tasks,</span><br><span class="line">                            long timeout,</span><br><span class="line">                            TimeUnit unit)</span><br><span class="line">                    throws InterruptedException</span><br></pre></td></tr></table></figure>
+<p>多个任务提交并返回一组Future结果。</p>
+<h3 id="CompletionService"><a href="#CompletionService" class="headerlink" title="CompletionService"></a>CompletionService</h3><p>一种将新异步任务的生产与已完成任务的结果消耗相分离的服务。 生产者submit执行任务。 消费者take完成任务并按照完成的顺序处理其结果。<br>CompletionService将<strong>Executor和BlockingQueue</strong>结合在一起。<br><strong>ExecutorCompletionService</strong>是CompletionService实现类。计算完成后，调用FutureTask的<strong>done</strong>方法。当提交任务时，包装任务为一个<strong>QueueingFuture</strong>（FutureTask的子类），改写子类的done方法。将结果放入<strong>BlockingQueue</strong>中。<br>take或poll方法委托给lockingQueue，阻塞式获得队列中完成的任务的Future结果。</p>
+<h3 id="Executors"><a href="#Executors" class="headerlink" title="Executors"></a>Executors</h3><p>Executors提供了一系列<strong>工厂方法</strong>用于创先线程池，返回的线程池都实现了ExecutorService接口。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">public static ExecutorService newFixedThreadPool(int nThreads)</span><br></pre></td></tr></table></figure>
+<p>创建固定数目线程的线程池。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">public static ExecutorService newCachedThreadPool()</span><br></pre></td></tr></table></figure>
+<p>创建一个可缓存的线程池，调用execute将重用以前构造的线程（如果线程可用）。如果现有线程没有可用的，则创建一个新线   程并添加到池中。终止并从缓存中移除那些已有 60 秒钟未被使用的线程。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">public static ExecutorService newSingleThreadExecutor()</span><br></pre></td></tr></table></figure>
+<p>创建一个单线程化的Executor。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">public static ScheduledExecutorService newScheduledThreadPool(int corePoolSize)</span><br></pre></td></tr></table></figure>
+<p>创建一个支持定时及周期性的任务执行的线程池，多数情况下可用来替代Timer类。</p>
+<p>一般来说，<strong>CachedTheadPool</strong>在程序执行过程中通常会创建与所需数量相同的线程，然后在它回收旧线程时停止创建新线程，因此它是合理的Executor的首选，只有当这种方式会引发问题时（比如需要大量长时间面向连接的线程时），才需要考虑用FixedThreadPool。</p>
+<h3 id="ThreadPoolExecutor"><a href="#ThreadPoolExecutor" class="headerlink" title="ThreadPoolExecutor"></a>ThreadPoolExecutor</h3><p>newFixedThreadPool、newCachedThreadPool、newSingleThreadExecutor均返回<strong>ThreadPoolExecutor</strong>对象。该类继承自<strong>AbstractExecutorService</strong>，AbstractExecutorService继承自ThreadPoolExecutor。<br>ThreadPoolExecutor构造函数的参数如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">public ThreadPoolExecutor(int corePoolSize,</span><br><span class="line">                            int maximumPoolSize,</span><br><span class="line">                            long keepAliveTime,</span><br><span class="line">                            TimeUnit unit,</span><br><span class="line">                            BlockingQueue&lt;Runnable&gt; workQueue,</span><br><span class="line">                            ThreadFactory threadFactory,</span><br><span class="line">                            RejectedExecutionHandler handler)</span><br></pre></td></tr></table></figure>
+
+<p>任何<strong>BlockingQueue</strong>可用于传送和保留提交的任务。 这个队列的使用与池大小相互作用：<br>如果少于corePoolSize线程正在运行，Executor总是喜欢添加一个新线程，而不是排队。<br>如果corePoolSize或更多的线程正在运行，Executor总是喜欢排队请求而不是添加一个新的线程。<br>如果请求无法排队，则会创建一个新线程，除非这将超出maximumPoolSize，否则任务将被拒绝。</p>
+<h4 id="排队策略"><a href="#排队策略" class="headerlink" title="排队策略"></a>排队策略</h4><p>排队有三种一般策略：<br><strong>直接切换</strong> 一个工作队列的一个很好的默认选择是一个SynchronousQueue ，将任务交给线程，无需另外控制。 在这里，如果没有线程可以立即运行，那么尝试排队任务会失败，因此将构建一个新的线程。 处理可能具有内部依赖关系的请求集时，此策略可避免锁定。 直接切换通常需要无限制的maximumPoolSizes，以避免拒绝新提交的任务。 这反过来允许无限线程增长的可能性，当命令继续以平均速度比他们可以处理的速度更快地到达时。<br><strong>无界队列</strong> 使用无界队列（例如LinkedBlockingQueue没有预定容量）会导致新的任务，在队列中等待，当所有corePoolSize线程都很忙。 因此，不会再创建corePoolSize线程。 （因此，最大值大小的值没有任何影响。）每个任务完全独立于其他任务时，这可能是适当的，因此任务不会影响其他执行; 例如，在网页服务器中。 虽然这种排队风格可以有助于平滑瞬态突发的请求，但是当命令继续达到的平均速度比可以处理的速度更快时，它承认无界工作队列增长的可能性。<br><strong>有边界的队列</strong> 有限队列（例如， ArrayBlockingQueue ）有助于在使用有限maxPoolSizes时防止资源耗尽，但可能更难调整和控制。 队列大小和最大池大小可能彼此交易：使用大队列和小型池可以最大限度地减少CPU使用率，OS资源和上下文切换开销，但可能导致人为的低吞吐量。 如果任务频繁阻塞（例如，如果它们是I / O绑定），则系统可能能够安排比您允许的更多线程的时间。 使用小型队列通常需要较大的池大小，这样可以使CPU繁忙，但可能会遇到不可接受的调度开销，这也降低了吞吐量。</p>
+<h4 id="典型的实现"><a href="#典型的实现" class="headerlink" title="典型的实现"></a>典型的实现</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">public static ExecutorService newSingleThreadExecutor() &#123;</span><br><span class="line">    return new FinalizableDelegatedExecutorService</span><br><span class="line">        (new ThreadPoolExecutor(1, 1,</span><br><span class="line">                                0L, TimeUnit.MILLISECONDS,</span><br><span class="line">                                new LinkedBlockingQueue&lt;Runnable&gt;()));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public static ExecutorService newFixedThreadPool(int nThreads) &#123;</span><br><span class="line">    return new ThreadPoolExecutor(nThreads, nThreads,</span><br><span class="line">                                    0L, TimeUnit.MILLISECONDS,</span><br><span class="line">                                    new LinkedBlockingQueue&lt;Runnable&gt;());</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public static ExecutorService newCachedThreadPool() &#123;</span><br><span class="line">    return new ThreadPoolExecutor(0, Integer.MAX_VALUE,</span><br><span class="line">                                    60L, TimeUnit.SECONDS,</span><br><span class="line">                                    new SynchronousQueue&lt;Runnable&gt;());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://buaajz.github.io/2020/04/05/HashMap%E6%BA%90%E7%A0%81%E6%8E%A2%E7%A9%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/UserImage.jpeg">
+      <meta itemprop="name" content="金年轻">
+      <meta itemprop="description" content="金年轻的个人博客，欢迎交流">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="金年轻">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/04/05/HashMap%E6%BA%90%E7%A0%81%E6%8E%A2%E7%A9%B6/" class="post-title-link" itemprop="url">HashMap源码探究</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-04-05 10:57:51" itemprop="dateCreated datePublished" datetime="2020-04-05T10:57:51+08:00">2020-04-05</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80/" itemprop="url" rel="index"><span itemprop="name">语言基础</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/04/05/HashMap%E6%BA%90%E7%A0%81%E6%8E%A2%E7%A9%B6/" class="post-meta-item leancloud_visitors" data-flag-title="HashMap源码探究" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2020/04/05/HashMap%E6%BA%90%E7%A0%81%E6%8E%A2%E7%A9%B6/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/04/05/HashMap%E6%BA%90%E7%A0%81%E6%8E%A2%E7%A9%B6/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>9.3k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>8 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="HashMap简介"><a href="#HashMap简介" class="headerlink" title="HashMap简介"></a>HashMap简介</h2><p>HashMap是基于哈希表的Map接口的非同步实现。此实现提供所有可选的映射操作，并允许使用null值和null键。此类不保证映射的顺序，特别是它不保证该顺序恒久不变。<br>HashMap实际上是一个“链表散列”的数据结构，即数组和链表的结合体。允许null的值和null键。</p>
+<h2 id="基本实现原理"><a href="#基本实现原理" class="headerlink" title="基本实现原理"></a>基本实现原理</h2><p>HashMap 基于 Hash 算法实现的。<br>当我们往Hashmap中put元素时，利用key的hashCode重新hash计算出当前对象的元素在数组中的下标。<br>存储时，如果出现hash值相同的key，此时有两种情况。(1)如果key相同，则覆盖原始值；(2)如果key不同（出现冲突），则将当前的key-value放入链表中。<br>获取时，直接找到hash值对应的下标，在进一步判断key是否相同，从而找到对应值。<br>理解了以上过程就不难明白HashMap是如何解决hash冲突的问题，核心就是使用了数组的存储方式，然后将冲突的key的对象放入链表中，一旦发现冲突就在链表中做进一步的对比。</p>
+<h2 id="HashMap的底层实现"><a href="#HashMap的底层实现" class="headerlink" title="HashMap的底层实现"></a>HashMap的底层实现</h2><p>数组的特点是：寻址容易，插入和删除困难；链表的特点是：寻址困难，但插入和删除容易；所以我们将数组和链表结合在一起，发挥两者各自的优势，使用一种叫做拉链法的方式可以解决哈希冲突。<br>jdk1.8在解决哈希冲突时有了较大的变化，当链表长度大于阈值（默认为8）时，将链表转化为红黑树，以减少搜索时间。</p>
+<h2 id="hashCode（）与equals（）的相关规定"><a href="#hashCode（）与equals（）的相关规定" class="headerlink" title="hashCode（）与equals（）的相关规定"></a>hashCode（）与equals（）的相关规定</h2><p>如果两个对象相等，则hashcode一定也是相同的。<br>两个对象相等,对两个equals方法返回true。<br>两个对象有相同的hashcode值，它们也不一定是相等的。<br>综上，equals方法被覆盖过，则hashCode方法也必须被覆盖。<br>hashCode()的默认行为是对堆上的对象产生独特值。如果没有重写hashCode()，则该class的两个对象无论如何都不会相等（即使这两个对象指向相同的数据）。</p>
+<h2 id="与equals的区别"><a href="#与equals的区别" class="headerlink" title="==与equals的区别"></a>==与equals的区别</h2><p>==是判断两个变量或实例是不是指向同一个内存空间 equals是判断两个变量或实例所指向的内存空间的值是不是相同。<br>==是指对内存地址进行比较 equals()是对字符串的内容进行比较3.==指引用是否相同 equals()指的是值是否相同。</p>
+<h2 id="HashMap的put方法的具体流程？"><a href="#HashMap的put方法的具体流程？" class="headerlink" title="HashMap的put方法的具体流程？"></a>HashMap的put方法的具体流程？</h2><p>当我们put的时候，首先计算 key的hash值，这里调用了 hash方法，hash方法实际是让key.hashCode()与key.hashCode()&gt;&gt;&gt;16进行异或操作，高16bit补0，一个数和0异或不变，所以 hash 函数大概的作用就是：高16bit不变，低16bit和高16bit做了一个异或，目的是减少碰撞。按照函数注释，因为bucket数组大小是2的幂，计算下标index = (table.length - 1) &amp; hash，如果不做 hash 处理，相当于散列生效的只有几个低 bit 位，为了减少散列的碰撞，设计者综合考虑了速度、作用、质量之后，使用高16bit和低16bit异或来简单处理减少碰撞，而且JDK8中用了复杂度 O（logn）的树结构来提升碰撞下的性能。</p>
+<p>put方法调用putVal方法,进行hash运算，作为参数传递给putVal。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">public V put(K key, V value) &#123;</span><br><span class="line">    return putVal(hash(key), key, value, false, true);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>内部hash运算，减少碰撞。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;高16bit不变，低16bit和高16bit做了一个异或，目的是减少碰撞</span><br><span class="line">static final int hash(Object key) &#123;</span><br><span class="line">    int h;</span><br><span class="line">    return (key &#x3D;&#x3D; null) ? 0 : (h &#x3D; key.hashCode()) ^ (h &gt;&gt;&gt; 16);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br></pre></td><td class="code"><pre><span class="line">final V putVal(int hash, K key, V value, boolean onlyIfAbsent,</span><br><span class="line">            boolean evict) &#123;</span><br><span class="line">    Node&lt;K,V&gt;[] tab; Node&lt;K,V&gt; p; int n, i;</span><br><span class="line">    &#x2F;&#x2F; 步骤①：tab为空则创建 </span><br><span class="line">    &#x2F;&#x2F; table未初始化或者长度为0，进行扩容</span><br><span class="line">    if ((tab &#x3D; table) &#x3D;&#x3D; null || (n &#x3D; tab.length) &#x3D;&#x3D; 0)</span><br><span class="line">        n &#x3D; (tab &#x3D; resize()).length;</span><br><span class="line">    &#x2F;&#x2F; 步骤②：计算index，并对null做处理  </span><br><span class="line">    &#x2F;&#x2F; (n - 1) &amp; hash 确定元素存放在哪个桶中，桶为空，新生成结点放入桶中(此时，这个结点是放在数组中)</span><br><span class="line">    if ((p &#x3D; tab[i &#x3D; (n - 1) &amp; hash]) &#x3D;&#x3D; null)</span><br><span class="line">        tab[i] &#x3D; newNode(hash, key, value, null);</span><br><span class="line">    &#x2F;&#x2F; 桶中已经存在元素</span><br><span class="line">    else &#123;</span><br><span class="line">        Node&lt;K,V&gt; e; K k;</span><br><span class="line">        &#x2F;&#x2F; 步骤③：节点key存在，直接覆盖value </span><br><span class="line">        &#x2F;&#x2F; 比较桶中第一个元素(数组中的结点)的hash值相等，key相等</span><br><span class="line">        if (p.hash &#x3D;&#x3D; hash &amp;&amp;</span><br><span class="line">            ((k &#x3D; p.key) &#x3D;&#x3D; key || (key !&#x3D; null &amp;&amp; key.equals(k))))</span><br><span class="line">            &#x2F;&#x2F; 将第一个元素赋值给e，用e来记录</span><br><span class="line">            e &#x3D; p;</span><br><span class="line">        &#x2F;&#x2F; 步骤④：判断该链为红黑树 </span><br><span class="line">        &#x2F;&#x2F; hash值不相等，即key不相等；为红黑树结点</span><br><span class="line">        &#x2F;&#x2F; 如果当前元素类型为TreeNode，表示为红黑树，putTreeVal返回待存放的node, e可能为nul</span><br><span class="line">        else if (p instanceof TreeNode)</span><br><span class="line">            e &#x3D; ((TreeNode&lt;K,V&gt;)p).putTreeVal(this, tab, hash, key, value);</span><br><span class="line">        &#x2F;&#x2F; 步骤⑤：该链为链表 </span><br><span class="line">        &#x2F;&#x2F; 为链表结点</span><br><span class="line">        else &#123;</span><br><span class="line">            &#x2F;&#x2F; 在链表最末插入结点</span><br><span class="line">            for (int binCount &#x3D; 0; ; ++binCount) &#123;</span><br><span class="line">                &#x2F;&#x2F; 到达链表的尾部</span><br><span class="line">                &#x2F;&#x2F;判断该链表尾部指针是不是空的</span><br><span class="line">                if ((e &#x3D; p.next) &#x3D;&#x3D; null) &#123;</span><br><span class="line">                    &#x2F;&#x2F; 在尾部插入新结点</span><br><span class="line">                    p.next &#x3D; newNode(hash, key, value, null);</span><br><span class="line">                    &#x2F;&#x2F;判断链表的长度是否达到转化红黑树的临界值，临界值为8表节点大于8且数组长度大于等于64</span><br><span class="line">                    if (binCount &gt;&#x3D; TREEIFY_THRESHOLD - 1) &#x2F;&#x2F; -1 for 1st</span><br><span class="line">                        &#x2F;&#x2F;链表结构转树形结构</span><br><span class="line">                        treeifyBin(tab, hash);</span><br><span class="line">                    &#x2F;&#x2F; 跳出循环</span><br><span class="line">                    break;</span><br><span class="line">                &#125;</span><br><span class="line">                &#x2F;&#x2F; 判断链表中结点的key值与插入的元素的key值是否相等</span><br><span class="line">                if (e.hash &#x3D;&#x3D; hash &amp;&amp;</span><br><span class="line">                    ((k &#x3D; e.key) &#x3D;&#x3D; key || (key !&#x3D; null &amp;&amp; key.equals(k))))</span><br><span class="line">                    &#x2F;&#x2F; 相等，跳出循环</span><br><span class="line">                    break;</span><br><span class="line">                &#x2F;&#x2F; 用于遍历桶中的链表，与前面的e &#x3D; p.next组合，可以遍历链表</span><br><span class="line">                p &#x3D; e;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        &#x2F;&#x2F;判断当前的key已经存在的情况下，再来一个相同的hash值、key值时，返回新来的value这个值</span><br><span class="line">        if (e !&#x3D; null) &#123; &#x2F;&#x2F; existing mapping for key</span><br><span class="line">            &#x2F;&#x2F; 记录e的value</span><br><span class="line">            V oldValue &#x3D; e.value;</span><br><span class="line">            &#x2F;&#x2F; onlyIfAbsent为false或者旧值为null</span><br><span class="line">            if (!onlyIfAbsent || oldValue &#x3D;&#x3D; null)</span><br><span class="line">                &#x2F;&#x2F;用新值替换旧值</span><br><span class="line">                e.value &#x3D; value;</span><br><span class="line">            &#x2F;&#x2F; 访问后回调</span><br><span class="line">            afterNodeAccess(e);</span><br><span class="line">            &#x2F;&#x2F; 返回旧值</span><br><span class="line">            return oldValue;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    ++modCount;</span><br><span class="line">    &#x2F;&#x2F; 步骤⑥：超过最大容量就扩容 </span><br><span class="line">    &#x2F;&#x2F; 实际大小大于阈值则扩容</span><br><span class="line">    if (++size &gt; threshold)</span><br><span class="line">        resize();</span><br><span class="line">    &#x2F;&#x2F; 插入后回调</span><br><span class="line">    afterNodeInsertion(evict);</span><br><span class="line">    return null;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Node类的定义。可以看出，Node中存放运算后的hash值，键值对，及next节点。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">static class Node&lt;K,V&gt; implements Map.Entry&lt;K,V&gt; &#123;</span><br><span class="line">    final int hash;</span><br><span class="line">    final K key;</span><br><span class="line">    V value;</span><br><span class="line">    Node&lt;K,V&gt; next;</span><br><span class="line"></span><br><span class="line">    Node(int hash, K key, V value, Node&lt;K,V&gt; next) &#123;</span><br><span class="line">        this.hash &#x3D; hash;</span><br><span class="line">        this.key &#x3D; key;</span><br><span class="line">        this.value &#x3D; value;</span><br><span class="line">        this.next &#x3D; next;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public final K getKey()        &#123; return key; &#125;</span><br><span class="line">    public final V getValue()      &#123; return value; &#125;</span><br><span class="line">    public final String toString() &#123; return key + &quot;&#x3D;&quot; + value; &#125;</span><br><span class="line"></span><br><span class="line">    public final int hashCode() &#123;</span><br><span class="line">        return Objects.hashCode(key) ^ Objects.hashCode(value);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public final V setValue(V newValue) &#123;</span><br><span class="line">        V oldValue &#x3D; value;</span><br><span class="line">        value &#x3D; newValue;</span><br><span class="line">        return oldValue;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public final boolean equals(Object o) &#123;</span><br><span class="line">        if (o &#x3D;&#x3D; this)</span><br><span class="line">            return true;</span><br><span class="line">        if (o instanceof Map.Entry) &#123;</span><br><span class="line">            Map.Entry&lt;?,?&gt; e &#x3D; (Map.Entry&lt;?,?&gt;)o;</span><br><span class="line">            if (Objects.equals(key, e.getKey()) &amp;&amp;</span><br><span class="line">                Objects.equals(value, e.getValue()))</span><br><span class="line">                return true;</span><br><span class="line">        &#125;</span><br><span class="line">        return false;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>链表节点大于8且数组长度大于等于64时，链表转化为红黑树。当链表节点大于8且数组长度小于64时，优先扩容。下面为treeifyBin源码。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">final void treeifyBin(Node&lt;K,V&gt;[] tab, int hash) &#123;</span><br><span class="line">    int n, index; Node&lt;K,V&gt; e;</span><br><span class="line">    if (tab &#x3D;&#x3D; null || (n &#x3D; tab.length) &lt; MIN_TREEIFY_CAPACITY)</span><br><span class="line">        resize();</span><br><span class="line">    else if ((e &#x3D; tab[index &#x3D; (n - 1) &amp; hash]) !&#x3D; null) &#123;</span><br><span class="line">        TreeNode&lt;K,V&gt; hd &#x3D; null, tl &#x3D; null;</span><br><span class="line">        do &#123;</span><br><span class="line">            TreeNode&lt;K,V&gt; p &#x3D; replacementTreeNode(e, null);</span><br><span class="line">            if (tl &#x3D;&#x3D; null)</span><br><span class="line">                hd &#x3D; p;</span><br><span class="line">            else &#123;</span><br><span class="line">                p.prev &#x3D; tl;</span><br><span class="line">                tl.next &#x3D; p;</span><br><span class="line">            &#125;</span><br><span class="line">            tl &#x3D; p;</span><br><span class="line">        &#125; while ((e &#x3D; e.next) !&#x3D; null);</span><br><span class="line">        if ((tab[index] &#x3D; hd) !&#x3D; null)</span><br><span class="line">            hd.treeify(tab);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="HashMap的扩容"><a href="#HashMap的扩容" class="headerlink" title="HashMap的扩容"></a>HashMap的扩容</h2><p>在jdk1.8中，resize方法是在hashmap中的键值对大于阀值时或者初始化时，就调用resize方法进行扩容；</p>
+<p>每次扩展的时候，都是扩展2倍；</p>
+<p>扩展后Node对象的位置要么在原位置，要么移动到原位置偏移原容量值的位置。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br></pre></td><td class="code"><pre><span class="line">final Node&lt;K,V&gt;[] resize() &#123;</span><br><span class="line">    Node&lt;K,V&gt;[] oldTab &#x3D; table;&#x2F;&#x2F;oldTab指向hash桶数组</span><br><span class="line">    int oldCap &#x3D; (oldTab &#x3D;&#x3D; null) ? 0 : oldTab.length;</span><br><span class="line">    int oldThr &#x3D; threshold;</span><br><span class="line">    int newCap, newThr &#x3D; 0;</span><br><span class="line">    if (oldCap &gt; 0) &#123;&#x2F;&#x2F;如果oldCap不为空的话，就是hash桶数组不为空</span><br><span class="line">        if (oldCap &gt;&#x3D; MAXIMUM_CAPACITY) &#123;&#x2F;&#x2F;如果大于最大容量了，就赋值为整数最大的阀值</span><br><span class="line">            threshold &#x3D; Integer.MAX_VALUE;</span><br><span class="line">            return oldTab;&#x2F;&#x2F;返回</span><br><span class="line">        &#125;&#x2F;&#x2F;如果当前hash桶数组的长度在扩容后仍然小于最大容量 并且oldCap大于默认值16</span><br><span class="line">        else if ((newCap &#x3D; oldCap &lt;&lt; 1) &lt; MAXIMUM_CAPACITY &amp;&amp;</span><br><span class="line">                 oldCap &gt;&#x3D; DEFAULT_INITIAL_CAPACITY)</span><br><span class="line">            newThr &#x3D; oldThr &lt;&lt; 1; &#x2F;&#x2F; double threshold 双倍扩容阀值threshold</span><br><span class="line">    &#125;</span><br><span class="line">    &#x2F;&#x2F; 旧的容量为0，但threshold大于零，代表有参构造有cap传入，threshold已经被初始化成最小2的n次幂</span><br><span class="line">    &#x2F;&#x2F; 直接将该值赋给新的容量</span><br><span class="line">    else if (oldThr &gt; 0) &#x2F;&#x2F; initial capacity was placed in threshold</span><br><span class="line">        newCap &#x3D; oldThr;</span><br><span class="line">    &#x2F;&#x2F; 无参构造创建的map，给出默认容量和threshold 16, 16*0.75</span><br><span class="line">    else &#123;               &#x2F;&#x2F; zero initial threshold signifies using defaults</span><br><span class="line">        newCap &#x3D; DEFAULT_INITIAL_CAPACITY;</span><br><span class="line">        newThr &#x3D; (int)(DEFAULT_LOAD_FACTOR * DEFAULT_INITIAL_CAPACITY);</span><br><span class="line">    &#125;</span><br><span class="line">    &#x2F;&#x2F; 新的threshold &#x3D; 新的cap * 0.75</span><br><span class="line">    if (newThr &#x3D;&#x3D; 0) &#123;</span><br><span class="line">        float ft &#x3D; (float)newCap * loadFactor;</span><br><span class="line">        newThr &#x3D; (newCap &lt; MAXIMUM_CAPACITY &amp;&amp; ft &lt; (float)MAXIMUM_CAPACITY ?</span><br><span class="line">                  (int)ft : Integer.MAX_VALUE);</span><br><span class="line">    &#125;</span><br><span class="line">    threshold &#x3D; newThr;</span><br><span class="line">    &#x2F;&#x2F; 计算出新的数组长度后赋给当前成员变量table</span><br><span class="line">    @SuppressWarnings(&#123;&quot;rawtypes&quot;,&quot;unchecked&quot;&#125;)</span><br><span class="line">        Node&lt;K,V&gt;[] newTab &#x3D; (Node&lt;K,V&gt;[])new Node[newCap];&#x2F;&#x2F;新建hash桶数组</span><br><span class="line">    table &#x3D; newTab;&#x2F;&#x2F;将新数组的值复制给旧的hash桶数组</span><br><span class="line">    &#x2F;&#x2F; 如果原先的数组没有初始化，那么resize的初始化工作到此结束，否则进入扩容元素重排逻辑，使其均匀的分散</span><br><span class="line">    if (oldTab !&#x3D; null) &#123;</span><br><span class="line">        &#x2F;&#x2F; 遍历新数组的所有桶下标</span><br><span class="line">        for (int j &#x3D; 0; j &lt; oldCap; ++j) &#123;</span><br><span class="line">            Node&lt;K,V&gt; e;</span><br><span class="line">            if ((e &#x3D; oldTab[j]) !&#x3D; null) &#123;</span><br><span class="line">                &#x2F;&#x2F; 旧数组的桶下标赋给临时变量e，并且解除旧数组中的引用，否则就数组无法被GC回收</span><br><span class="line">                oldTab[j] &#x3D; null;</span><br><span class="line">                &#x2F;&#x2F; 如果e.next&#x3D;&#x3D;null，代表桶中就一个元素，不存在链表或者红黑树</span><br><span class="line">                if (e.next &#x3D;&#x3D; null)</span><br><span class="line">                    &#x2F;&#x2F; 用同样的hash映射算法把该元素加入新的数组</span><br><span class="line">                    newTab[e.hash &amp; (newCap - 1)] &#x3D; e;</span><br><span class="line">                &#x2F;&#x2F; 如果e是TreeNode并且e.next!&#x3D;null，那么处理树中元素的重排</span><br><span class="line">                else if (e instanceof TreeNode)</span><br><span class="line">                    ((TreeNode&lt;K,V&gt;)e).split(this, newTab, j, oldCap);</span><br><span class="line">                &#x2F;&#x2F; e是链表的头并且e.next!&#x3D;null，那么处理链表中元素重排</span><br><span class="line">                else &#123; &#x2F;&#x2F; preserve order</span><br><span class="line">                    &#x2F;&#x2F; loHead,loTail 代表扩容后不用变换下标，见注1</span><br><span class="line">                    Node&lt;K,V&gt; loHead &#x3D; null, loTail &#x3D; null;</span><br><span class="line">                    &#x2F;&#x2F; hiHead,hiTail 代表扩容后变换下标，见注1</span><br><span class="line">                    Node&lt;K,V&gt; hiHead &#x3D; null, hiTail &#x3D; null;</span><br><span class="line">                    Node&lt;K,V&gt; next;</span><br><span class="line">                    &#x2F;&#x2F; 遍历链表</span><br><span class="line">                    do &#123;             </span><br><span class="line">                        next &#x3D; e.next;</span><br><span class="line">                        if ((e.hash &amp; oldCap) &#x3D;&#x3D; 0) &#123;</span><br><span class="line">                            if (loTail &#x3D;&#x3D; null)</span><br><span class="line">                                &#x2F;&#x2F; 初始化head指向链表当前元素e，e不一定是链表的第一个元素，初始化后loHead</span><br><span class="line">                                &#x2F;&#x2F; 代表下标保持不变的链表的头元素</span><br><span class="line">                                loHead &#x3D; e;</span><br><span class="line">                            else                                </span><br><span class="line">                                &#x2F;&#x2F; loTail.next指向当前e</span><br><span class="line">                                loTail.next &#x3D; e;</span><br><span class="line">                            &#x2F;&#x2F; loTail指向当前的元素e</span><br><span class="line">                            &#x2F;&#x2F; 初始化后，loTail和loHead指向相同的内存，所以当loTail.next指向下一个元素时，</span><br><span class="line">                            &#x2F;&#x2F; 底层数组中的元素的next引用也相应发生变化，造成lowHead.next.next.....</span><br><span class="line">                            &#x2F;&#x2F; 跟随loTail同步，使得lowHead可以链接到所有属于该链表的元素。</span><br><span class="line">                            loTail &#x3D; e;                           </span><br><span class="line">                        &#125;</span><br><span class="line">                        else &#123;</span><br><span class="line">                            if (hiTail &#x3D;&#x3D; null)</span><br><span class="line">                                &#x2F;&#x2F; 初始化head指向链表当前元素e, 初始化后hiHead代表下标更改的链表头元素</span><br><span class="line">                                hiHead &#x3D; e;</span><br><span class="line">                            else</span><br><span class="line">                                hiTail.next &#x3D; e;</span><br><span class="line">                            hiTail &#x3D; e;</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125; while ((e &#x3D; next) !&#x3D; null);</span><br><span class="line">                    &#x2F;&#x2F; 遍历结束, 将tail指向null，并把链表头放入新数组的相应下标，形成新的映射。</span><br><span class="line">                    if (loTail !&#x3D; null) &#123;</span><br><span class="line">                        loTail.next &#x3D; null;</span><br><span class="line">                        newTab[j] &#x3D; loHead;</span><br><span class="line">                    &#125;</span><br><span class="line">                    if (hiTail !&#x3D; null) &#123;</span><br><span class="line">                        hiTail.next &#x3D; null;</span><br><span class="line">                        newTab[j + oldCap] &#x3D; hiHead;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    return newTab;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="ConcurrentHashMap实现"><a href="#ConcurrentHashMap实现" class="headerlink" title="ConcurrentHashMap实现"></a>ConcurrentHashMap实现</h2><p>在JDK1.7中，ConcurrentHashMap采用Segment + HashEntry的方式进行实现。</p>
+<p>在JDK1.8中，放弃了Segment臃肿的设计，取而代之的是采用Node + CAS + Synchronized来保证并发安全进行实现，synchronized只锁定当前链表或红黑二叉树的首节点，这样只要hash不冲突，就不会产生并发，效率又提升N倍。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://buaajz.github.io/2020/03/29/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%88%9D%E6%8E%A2-1/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -403,6 +1025,19 @@
 
               <time title="创建时间：2020-03-29 20:51:27" itemprop="dateCreated datePublished" datetime="2020-03-29T20:51:27+08:00">2020-03-29</time>
             </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80/" itemprop="url" rel="index"><span itemprop="name">语言基础</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80/JAVA%E5%B9%B6%E5%8F%91/" itemprop="url" rel="index"><span itemprop="name">JAVA并发</span></a>
+                </span>
+            </span>
 
           
             <span id="/2020/03/29/ThreadLocal%E6%B7%B1%E5%85%A5%E6%8E%A2%E7%A9%B6/" class="post-meta-item leancloud_visitors" data-flag-title="ThreadLocal深入探究" title="阅读次数">
@@ -431,14 +1066,14 @@
                 <i class="fa fa-file-word-o"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>0</span>
+              <span>2.6k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="fa fa-clock-o"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>1 分钟</span>
+              <span>2 分钟</span>
             </span>
 
         </div>
@@ -450,7 +1085,34 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          
+          <h2 id="ThreadLocal简介"><a href="#ThreadLocal简介" class="headerlink" title="ThreadLocal简介"></a>ThreadLocal简介</h2><p>ThreadLocal是线程Thread中属性<strong>threadLocals</strong>的管理者。<br>ThreadLocal类用来提供<strong>线程内部的局部变量</strong>。这种变量在多线程环境下访问(通过get或set方法访问)时能保证各个线程里的变量相对独立于其他线程内的变量。ThreadLocal实例通常来说都是<strong>private static</strong>类型的，用于关联线程和线程的上下文。</p>
+<h2 id="与Thread、ThreadLocalMap的联系"><a href="#与Thread、ThreadLocalMap的联系" class="headerlink" title="与Thread、ThreadLocalMap的联系"></a>与Thread、ThreadLocalMap的联系</h2><p>ThreadLocal类内部定义<strong>ThreadLocalMap</strong>类。ThreadLocalMap内部存储着Entry(ThreadLocal<?> k, Object v) 数组，键类型为ThreadLocal<?> 。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">static class ThreadLocalMap &#123;</span><br><span class="line"></span><br><span class="line">    static class Entry extends WeakReference&lt;ThreadLocal&lt;?&gt;&gt; &#123;</span><br><span class="line">        &#x2F;** The value associated with this ThreadLocal. *&#x2F;</span><br><span class="line">        Object value;</span><br><span class="line"></span><br><span class="line">        Entry(ThreadLocal&lt;?&gt; k, Object v) &#123;</span><br><span class="line">            super(k);</span><br><span class="line">            value &#x3D; v;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Thread中定义如下的threadLocals。threadLocals作为Thread中的属性，是一个特殊的ThreadLocalMap 。每一个线程管理自己的threadLocals，key值是<strong>ThreadLocal</strong>实例，而value值这是我们设置的值。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ThreadLocal.ThreadLocalMap threadLocals &#x3D; null;</span><br></pre></td></tr></table></figure>
+
+<h2 id="ThreadLocal内部方法实现"><a href="#ThreadLocal内部方法实现" class="headerlink" title="ThreadLocal内部方法实现"></a>ThreadLocal内部方法实现</h2><p>initialValue。该函数在调用get函数的时候会第一次调用，但是如果一开始就调用了set函数，则该函数不会被调用。通常该函数只会被调用一次，除非手动调用了remove函数之后又调用get函数，这种情况下，get函数中还是会调用initialValue函数。该函数是protected类型的，很显然是建议在子类重载该函数的，所以通常该函数都会以匿名内部类的形式被重载，以指定初始值，</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">protected T initialValue() &#123;</span><br><span class="line">    return null;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>get。该函数用来获取与当前线程关联的ThreadLocal的值，如果当前线程没有该ThreadLocal的值，则调用initialValue函数获取初始值返回。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">public T get() &#123;</span><br><span class="line">    Thread t &#x3D; Thread.currentThread();</span><br><span class="line">    ThreadLocalMap map &#x3D; getMap(t);</span><br><span class="line">    if (map !&#x3D; null) &#123;</span><br><span class="line">        &#x2F;&#x2F;查找map中以当前threadlocal为键的键值对，如果没有返回null</span><br><span class="line">        ThreadLocalMap.Entry e &#x3D; map.getEntry(this);</span><br><span class="line">        if (e !&#x3D; null) &#123;</span><br><span class="line">            @SuppressWarnings(&quot;unchecked&quot;)</span><br><span class="line">            T result &#x3D; (T)e.value;</span><br><span class="line">            return result;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    &#x2F;&#x2F;没有map或者没有找到对应的键的键值对，则创建map或设置初始值</span><br><span class="line">    return setInitialValue();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>getMap。返回丹当前线程的threadLocals。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ThreadLocalMap getMap(Thread t) &#123;</span><br><span class="line">    return t.threadLocals;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>setInitialValue</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">private T setInitialValue() &#123;</span><br><span class="line">    &#x2F;&#x2F;initialValue返回值作为初始值</span><br><span class="line">    T value &#x3D; initialValue();</span><br><span class="line">    Thread t &#x3D; Thread.currentThread();</span><br><span class="line">    ThreadLocalMap map &#x3D; getMap(t);</span><br><span class="line">    &#x2F;&#x2F;map存在则插入键值对</span><br><span class="line">    if (map !&#x3D; null) &#123;</span><br><span class="line">        map.set(this, value);</span><br><span class="line">    &#125; </span><br><span class="line">    &#x2F;&#x2F;map不存在创建map，并初始化键值对（this，value）</span><br><span class="line">    else &#123;</span><br><span class="line">        createMap(t, value);</span><br><span class="line">    &#125;</span><br><span class="line">    if (this instanceof TerminatingThreadLocal) &#123;</span><br><span class="line">        TerminatingThreadLocal.register((TerminatingThreadLocal&lt;?&gt;) this);</span><br><span class="line">    &#125;</span><br><span class="line">    return value;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>createMap</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">void createMap(Thread t, T firstValue) &#123;</span><br><span class="line">    &#x2F;&#x2F;map不存在创建map，并初始化键值对（this，value）</span><br><span class="line">    t.threadLocals &#x3D; new ThreadLocalMap(this, firstValue);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>set</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">public void set(T value) &#123;</span><br><span class="line">    Thread t &#x3D; Thread.currentThread();</span><br><span class="line">    ThreadLocalMap map &#x3D; getMap(t);</span><br><span class="line">    if (map !&#x3D; null) &#123;</span><br><span class="line">        map.set(this, value);</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        createMap(t, value);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>remove</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">public void remove() &#123;</span><br><span class="line">        ThreadLocalMap m &#x3D; getMap(Thread.currentThread());</span><br><span class="line">        if (m !&#x3D; null) &#123;</span><br><span class="line">            m.remove(this);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="延伸"><a href="#延伸" class="headerlink" title="延伸"></a>延伸</h2><p>ThreadLocalMap是使用ThreadLocal的<strong>弱引用</strong>作为Key。</p>
+
       
     </div>
 
@@ -613,216 +1275,8 @@
 <p>配置完成后运行发现并没有背景动画。我们发现该配置有依赖项，我们在next目录下的source/lib文件夹下clone该项目：<a href="https://github.com/theme-next/theme-next-three" target="_blank" rel="noopener">https://github.com/theme-next/theme-next-three</a> 。再次运行可以加载背景动画。</p>
 <h2 id="未完待续"><a href="#未完待续" class="headerlink" title="未完待续"></a>未完待续</h2><p>至此在一波熬夜后，基本完成了基于next的博客搭建，并部署在了github上。目前只实现了基本的功能需求，鉴于访问速度还是很慢，所以后续我会继续优化，会尽快把博客部署到服务器上。<br>下面放上我的博客地址：<a href="https://buaajz.github.io">https://buaajz.github.io</a>。欢迎大家进来交流，共同学习。</p>
 <h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><blockquote>
-<p>maekdown语法：<a href="https://www.jianshu.com/p/191d1e21f7ed/" target="_blank" rel="noopener">https://www.jianshu.com/p/191d1e21f7ed/</a><br><a href="https://www.jianshu.com/p/2e318226c88d" target="_blank" rel="noopener">https://www.jianshu.com/p/2e318226c88d</a></p>
+<p>markdown语法：<a href="https://www.jianshu.com/p/191d1e21f7ed/" target="_blank" rel="noopener">https://www.jianshu.com/p/191d1e21f7ed/</a><br><a href="https://www.jianshu.com/p/2e318226c88d" target="_blank" rel="noopener">https://www.jianshu.com/p/2e318226c88d</a></p>
 </blockquote>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://buaajz.github.io/2020/03/22/test1/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/UserImage.jpeg">
-      <meta itemprop="name" content="金年轻">
-      <meta itemprop="description" content="金年轻的个人博客，欢迎交流">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="金年轻">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/03/22/test1/" class="post-title-link" itemprop="url">测试文章</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-03-22 20:38:20" itemprop="dateCreated datePublished" datetime="2020-03-22T20:38:20+08:00">2020-03-22</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%B5%8B%E8%AF%95/" itemprop="url" rel="index"><span itemprop="name">测试</span></a>
-                </span>
-            </span>
-
-          
-            <span id="/2020/03/22/test1/" class="post-meta-item leancloud_visitors" data-flag-title="测试文章" title="阅读次数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">阅读次数：</span>
-              <span class="leancloud-visitors-count"></span>
-            </span>
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="fa fa-comment-o"></i>
-      </span>
-      <span class="post-meta-item-text">Valine：</span>
-    
-    <a title="valine" href="/2020/03/22/test1/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2020/03/22/test1/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-file-word-o"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>23</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-clock-o"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>1 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="第一篇测试文章"><a href="#第一篇测试文章" class="headerlink" title="第一篇测试文章"></a>第一篇测试文章</h2><p>主要功能测试评论、标签及分类等。</p>
-<hr>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://buaajz.github.io/2020/03/22/hello-world/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/UserImage.jpeg">
-      <meta itemprop="name" content="金年轻">
-      <meta itemprop="description" content="金年轻的个人博客，欢迎交流">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="金年轻">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/03/22/hello-world/" class="post-title-link" itemprop="url">Hello World</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-03-22 20:10:03" itemprop="dateCreated datePublished" datetime="2020-03-22T20:10:03+08:00">2020-03-22</time>
-            </span>
-
-          
-            <span id="/2020/03/22/hello-world/" class="post-meta-item leancloud_visitors" data-flag-title="Hello World" title="阅读次数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">阅读次数：</span>
-              <span class="leancloud-visitors-count"></span>
-            </span>
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="fa fa-comment-o"></i>
-      </span>
-      <span class="post-meta-item-text">Valine：</span>
-    
-    <a title="valine" href="/2020/03/22/hello-world/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2020/03/22/hello-world/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-file-word-o"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>357</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-clock-o"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>1 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html" target="_blank" rel="noopener">Deployment</a></p>
 
       
     </div>
@@ -907,20 +1361,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">6</span>
+          <span class="site-state-item-count">9</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-count">3</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-count">19</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -978,12 +1432,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-area-chart"></i>
     </span>
-    <span title="站点总字数">7k</span>
+    <span title="站点总字数">32k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">7 分钟</span>
+    <span title="站点阅读时长">29 分钟</span>
 </div>
 
         
