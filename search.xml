@@ -20,8 +20,8 @@
         <category>编程框架</category>
       </categories>
       <tags>
-        <tag>Mybatis</tag>
         <tag>Spring</tag>
+        <tag>Mybatis</tag>
         <tag>SpringMVC</tag>
       </tags>
   </entry>
@@ -185,8 +185,8 @@
         <category>JAVA并发</category>
       </categories>
       <tags>
-        <tag>JAVA并发编程实战</tag>
         <tag>FutureTask</tag>
+        <tag>JAVA并发编程实战</tag>
       </tags>
   </entry>
   <entry>
@@ -228,6 +228,7 @@
         <category>JAVA并发</category>
       </categories>
       <tags>
+        <tag>JAVA并发编程实战</tag>
         <tag>并发容器类</tag>
         <tag>同步工具类</tag>
         <tag>ConcurrentHashMap</tag>
@@ -236,7 +237,6 @@
         <tag>CountDownLatch</tag>
         <tag>Semaphore</tag>
         <tag>CyclicBarrier</tag>
-        <tag>JAVA并发编程实战</tag>
       </tags>
   </entry>
   <entry>
@@ -274,8 +274,8 @@
       </categories>
       <tags>
         <tag>Executor框架</tag>
-        <tag>并发</tag>
         <tag>多线程</tag>
+        <tag>并发</tag>
       </tags>
   </entry>
   <entry>
@@ -394,9 +394,9 @@
       </categories>
       <tags>
         <tag>JAVA并发编程实战</tag>
+        <tag>多线程</tag>
         <tag>并发</tag>
         <tag>JAVA源码</tag>
-        <tag>多线程</tag>
         <tag>线程隔离</tag>
       </tags>
   </entry>
