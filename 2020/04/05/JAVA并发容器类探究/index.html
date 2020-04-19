@@ -30,9 +30,8 @@
 <meta property="og:description" content="同步容器类Vector Hashtable Collections.synchronizedXxx实现线程安全的方式：将状态封装起来，并对每个公有方法进行同步，每次只有一个线程可以访问容器的状态 同步容器类自身线程安全，但可能需要客户端额外加锁。在迭代的时候会遇到问题。容器类的迭代使用Iterator，如果迭代期间没有加锁，并发修改容器，会抛出ConcurrentModificationExcep">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2020-04-05T07:16:26.000Z">
-<meta property="article:modified_time" content="2020-04-05T08:13:59.959Z">
+<meta property="article:modified_time" content="2020-04-19T08:33:02.511Z">
 <meta property="article:author" content="金年轻">
-<meta property="article:tag" content="JAVA并发编程实战">
 <meta property="article:tag" content="并发容器类">
 <meta property="article:tag" content="同步工具类">
 <meta property="article:tag" content="ConcurrentHashMap">
@@ -41,6 +40,7 @@
 <meta property="article:tag" content="CountDownLatch">
 <meta property="article:tag" content="Semaphore">
 <meta property="article:tag" content="CyclicBarrier">
+<meta property="article:tag" content="JAVA并发编程实战">
 <meta name="twitter:card" content="summary">
 
 <link rel="canonical" href="https://buaajz.github.io/2020/04/05/JAVA%E5%B9%B6%E5%8F%91%E5%AE%B9%E5%99%A8%E7%B1%BB%E6%8E%A2%E7%A9%B6/">
@@ -291,18 +291,20 @@
       
         <h2 id="同步容器类"><a href="#同步容器类" class="headerlink" title="同步容器类"></a>同步容器类</h2><p><strong>Vector Hashtable Collections.synchronizedXxx</strong><br>实现线程安全的方式：将状态封装起来，并对每个公有方法进行同步，每次只有一个线程可以访问容器的状态</p>
 <p>同步容器类自身线程安全，但可能需要客户端额外加锁。<br>在迭代的时候会遇到问题。容器类的迭代使用Iterator，如果迭代期间没有加锁，并发修改容器，会抛出<strong>ConcurrentModificationException</strong>。<br>同步容器类表现行为是<strong>fail-fast</strong>。</p>
+<a id="more"></a>
+
 <p>同时要注意隐藏迭代器。toString、hashCode、equals方法等会间接进行迭代操作。</p>
 <h2 id="并发容器类"><a href="#并发容器类" class="headerlink" title="并发容器类"></a>并发容器类</h2><p>同步容器类将所有对容器状态的访问都串行化，实现线程安全。眼中降低并发性，造成吞吐量降低。<br>并发容器针对多线程并发访问设计。Java5.0增加<strong>ConcurrentHashMap、CopyOnWriteArrayList、Queue、BlockingQueue</strong>。<br>Java6.0引入<strong>ConcurrentSkipListMap、ConcurrentSkipListSet</strong>。<br>迭代器具有弱一致性（Weakly Consistent）。并非<strong>fail-fast</strong>。可以容忍并发的修改。<br>并发容器使用了与同步容器完全不同的加锁策略来提供更高的并发性和伸缩性。<br>例如在 ConcurrentHashMap 中采用了一种粒度更细的加锁机制，可以称为分段锁（Lock Striping），在这种锁机制下，允许任意数量的读线程并发地访问 map，并且执行读操作的线程和写操作的线程也可以并发的访问 map，同时允许一定数量的写操作线程并发地修改 map，所以它可以在并发环境下实现更高的吞吐量。</p>
 <p>没有实现加锁实现独占访问。</p>
 <h3 id="ConcurrentHashMap"><a href="#ConcurrentHashMap" class="headerlink" title="ConcurrentHashMap"></a>ConcurrentHashMap</h3><p>Map中的put方法：<br>如果map中包含类该键的映射，则替换旧值，并返回旧值。<br>如果map中不包含该键的映射，则写入。返回null。同时返回null也可表示之前该键对应的值为null。</p>
 <p>ConcurrentHashMap中的<strong>putIfAbsent</strong>方法：<br>如果指定的键尚未与值相关联，请将其与给定值相关联。 这相当于</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">if (!map.containsKey(key)) return map.put(key, value); else return map.get(key);</span><br></pre></td></tr></table></figure>
+<figure class="highlight maxima"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (!<span class="built_in">map</span>.containsKey(<span class="built_in">key</span>)) <span class="built_in">return</span> <span class="built_in">map</span>.<span class="built_in">put</span>(<span class="built_in">key</span>, value); <span class="keyword">else</span> <span class="built_in">return</span> <span class="built_in">map</span>.<span class="built_in">get</span>(<span class="built_in">key</span>);</span><br></pre></td></tr></table></figure>
 <p>返回值：与指定键相关联的上一个值，如果没有键的映射，返回null。</p>
 <h2 id="opyOnWriteArrayList"><a href="#opyOnWriteArrayList" class="headerlink" title="opyOnWriteArrayList"></a>opyOnWriteArrayList</h2><p>CopyOnWriteArrayList：只要正确发布一个事实不可变的对象，访问该对象就不需要进一步同步。CopyOnWriteArrayList利用底层数组的copy实现该安全机制。<br>每次修改时，都会创建并重新发布新的容器副本，见add源码。<br>迭代时调用COWIterator，传入底层数组的引用。在迭代器内部类复制原始数组，所以迭代器用到的数组不会修改，所以可以实现多线程同时对容器进行迭代。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">public Iterator&lt;E&gt; iterator() &#123;</span><br><span class="line">    return new COWIterator&lt;E&gt;(getArray(), 0);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public boolean add(E e) &#123;</span><br><span class="line">    synchronized (lock) &#123;</span><br><span class="line">        Object[] es &#x3D; getArray();</span><br><span class="line">        int len &#x3D; es.length;</span><br><span class="line">        es &#x3D; Arrays.copyOf(es, len + 1);</span><br><span class="line">        es[len] &#x3D; e;</span><br><span class="line">        setArray(es);</span><br><span class="line">        return true;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">public Iterator&lt;E&gt; iterator<span class="literal">()</span> &#123;</span><br><span class="line">    return <span class="keyword">new</span> COWIterator&lt;E&gt;(get<span class="constructor">Array()</span>, <span class="number">0</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public boolean add(E e) &#123;</span><br><span class="line">    synchronized (lock) &#123;</span><br><span class="line">        Object<span class="literal">[]</span> es = get<span class="constructor">Array()</span>;</span><br><span class="line">        <span class="built_in">int</span> len = es.length;</span><br><span class="line">        es = <span class="module-access"><span class="module"><span class="identifier">Arrays</span>.</span></span>copy<span class="constructor">Of(<span class="params">es</span>, <span class="params">len</span> + 1)</span>;</span><br><span class="line">        es<span class="literal">[<span class="identifier">len</span>]</span> = e;</span><br><span class="line">        set<span class="constructor">Array(<span class="params">es</span>)</span>;</span><br><span class="line">        return <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">static final class COWIterator&lt;E&gt; implements ListIterator&lt;E&gt; &#123;</span><br><span class="line">    &#x2F;** Snapshot of the array *&#x2F;</span><br><span class="line">    private final Object[] snapshot;</span><br><span class="line">    &#x2F;**</span><br><span class="line">        * Index of element to be returned by subsequent call to next.</span><br><span class="line">        *&#x2F;</span><br><span class="line">    private int cursor;</span><br><span class="line"></span><br><span class="line">    COWIterator(Object[] es, int initialCursor) &#123;</span><br><span class="line">        cursor &#x3D; initialCursor;</span><br><span class="line">        snapshot &#x3D; es;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public boolean hasNext() &#123;</span><br><span class="line">        return cursor &lt; snapshot.length;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public boolean hasPrevious() &#123;</span><br><span class="line">        return cursor &gt; 0;</span><br><span class="line">    &#125;</span><br><span class="line">...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">COWIterator</span>&lt;E&gt; <span class="title">implements</span> <span class="title">ListIterator</span>&lt;E&gt; &#123;</span></span><br><span class="line">    <span class="comment">/** Snapshot of the array */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Object[] snapshot;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">        * Index of element to be returned by subsequent call to next.</span></span><br><span class="line"><span class="comment">        */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> <span class="built_in">cursor</span>;</span><br><span class="line"></span><br><span class="line">    COWIterator(Object[] es, <span class="keyword">int</span> initialCursor) &#123;</span><br><span class="line">        <span class="built_in">cursor</span> = initialCursor;</span><br><span class="line">        snapshot = es;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">hasNext</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">cursor</span> &lt; snapshot.length;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">hasPrevious</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">cursor</span> &gt; <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 
 <h3 id="Queue"><a href="#Queue" class="headerlink" title="Queue"></a>Queue</h3><p>设计用于在处理之前保留元素的集合。 除了基本的Collection操作之外，队列还提供额外的插入，提取和检查操作。 这些方法中的每一种都有两种形式：如果操作失败，则抛出一个异常，另一种返回一个特殊值（ null或false ，具体取决于操作）。<br>队列通常但不一定是以FIFO（先进先出）方式排序元素。<br>PriorityQueue优先级队列的元素根据它们的有序natural ordering ，或由一个Comparator在队列构造的时候提供，这取决于所使用的构造方法。 优先队列不允许null元素。 依靠自然排序的优先级队列也不允许插入不可比较的对象.<br>如果可能， offer方法插入一个元素，否则返回false 。<br>remove()和poll()方法删除并返回队列的头。 从队列中删除哪个元素是队列排序策略的一个功能，它与实现不同。 remove()和poll()方法在队列为空时的行为不同： remove()方法抛出异常，而poll()方法返回null 。<br>element()和peek()方法返回，但不要删除，头的队列。peek()方法中，如果此队列为空，则返回 null 。<br>Queue实现通常不允许插入null元素。</p>
@@ -346,7 +348,6 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/JAVA%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E5%AE%9E%E6%88%98/" rel="tag"># JAVA并发编程实战</a>
               <a href="/tags/%E5%B9%B6%E5%8F%91%E5%AE%B9%E5%99%A8%E7%B1%BB/" rel="tag"># 并发容器类</a>
               <a href="/tags/%E5%90%8C%E6%AD%A5%E5%B7%A5%E5%85%B7%E7%B1%BB/" rel="tag"># 同步工具类</a>
               <a href="/tags/ConcurrentHashMap/" rel="tag"># ConcurrentHashMap</a>
@@ -355,6 +356,7 @@
               <a href="/tags/CountDownLatch/" rel="tag"># CountDownLatch</a>
               <a href="/tags/Semaphore/" rel="tag"># Semaphore</a>
               <a href="/tags/CyclicBarrier/" rel="tag"># CyclicBarrier</a>
+              <a href="/tags/JAVA%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E5%AE%9E%E6%88%98/" rel="tag"># JAVA并发编程实战</a>
           </div>
 
         
@@ -517,12 +519,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-area-chart"></i>
     </span>
-    <span title="站点总字数">67k</span>
+    <span title="站点总字数">59k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">1:01</span>
+    <span title="站点阅读时长">54 分钟</span>
 </div>
 
         
