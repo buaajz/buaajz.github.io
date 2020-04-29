@@ -361,8 +361,8 @@
         <category>JAVA并发</category>
       </categories>
       <tags>
-        <tag>JAVA并发编程实战</tag>
         <tag>FutureTask</tag>
+        <tag>JAVA并发编程实战</tag>
       </tags>
   </entry>
   <entry>
@@ -450,8 +450,8 @@
       </categories>
       <tags>
         <tag>Executor框架</tag>
-        <tag>并发</tag>
         <tag>多线程</tag>
+        <tag>并发</tag>
       </tags>
   </entry>
   <entry>
@@ -486,8 +486,8 @@
         <category>JAVA并发</category>
       </categories>
       <tags>
-        <tag>Executor框架</tag>
         <tag>JAVA并发编程实战</tag>
+        <tag>Executor框架</tag>
       </tags>
   </entry>
   <entry>
@@ -570,9 +570,9 @@
       </categories>
       <tags>
         <tag>JAVA并发编程实战</tag>
+        <tag>多线程</tag>
         <tag>并发</tag>
         <tag>JAVA源码</tag>
-        <tag>多线程</tag>
         <tag>线程隔离</tag>
       </tags>
   </entry>
