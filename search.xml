@@ -71,9 +71,9 @@
         <category>编程框架</category>
       </categories>
       <tags>
-        <tag>微服务</tag>
         <tag>SpringCloud</tag>
         <tag>SpringBoot</tag>
+        <tag>微服务</tag>
         <tag>跨域</tag>
         <tag>cors</tag>
       </tags>
@@ -124,10 +124,10 @@
         <category>编程框架</category>
       </categories>
       <tags>
+        <tag>微服务</tag>
         <tag>nginx</tag>
         <tag>反向代理</tag>
         <tag>域名解析</tag>
-        <tag>微服务</tag>
       </tags>
   </entry>
   <entry>
@@ -171,9 +171,9 @@
         <category>编程框架</category>
       </categories>
       <tags>
-        <tag>微服务</tag>
         <tag>SpringCloud</tag>
         <tag>SpringBoot</tag>
+        <tag>微服务</tag>
       </tags>
   </entry>
   <entry>
@@ -196,8 +196,8 @@
         <category>编程框架</category>
       </categories>
       <tags>
-        <tag>Mybatis</tag>
         <tag>Spring</tag>
+        <tag>Mybatis</tag>
         <tag>SpringMVC</tag>
       </tags>
   </entry>
@@ -361,8 +361,8 @@
         <category>JAVA并发</category>
       </categories>
       <tags>
-        <tag>FutureTask</tag>
         <tag>JAVA并发编程实战</tag>
+        <tag>FutureTask</tag>
       </tags>
   </entry>
   <entry>
@@ -486,8 +486,8 @@
         <category>JAVA并发</category>
       </categories>
       <tags>
-        <tag>JAVA并发编程实战</tag>
         <tag>Executor框架</tag>
+        <tag>JAVA并发编程实战</tag>
       </tags>
   </entry>
   <entry>
