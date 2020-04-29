@@ -5,6 +5,8 @@
     <url>/2020/04/30/%E6%9C%AC%E5%9C%B0%E9%A1%B9%E7%9B%AE%E5%85%B3%E8%81%94git%E8%BF%9C%E7%A8%8B%E4%BB%93%E5%BA%93/</url>
     <content><![CDATA[<h2 id="克隆-拷贝"><a href="#克隆-拷贝" class="headerlink" title="克隆+拷贝"></a>克隆+拷贝</h2><p>简单暴力方法，即远程仓库拉到本地，然后再把自己本地的项目拷贝到仓库中去。然后push到远程仓库上去即可。</p>
 <h2 id="关联远程仓库"><a href="#关联远程仓库" class="headerlink" title="关联远程仓库"></a>关联远程仓库</h2><p>第二种方法就是先将本地的项目初始化为一个git仓库，然后再强行合并本地仓库和远程仓库。</p>
+<a id="more"></a>
+
 <p>1、新建git仓库，将本地项目设置为一个git仓库。如果本地项目已经是一个git仓库了，请跳过这一步。在项目根目录下：</p>
 <figure class="highlight ebnf"><table><tr><td class="code"><pre><span class="line"><span class="attribute">git init</span></span><br></pre></td></tr></table></figure>
 <p>2、把当前目录下的已有文件全部加到刚刚新建的git仓库中：</p>
@@ -52,6 +54,8 @@
 <td><code>item.jd.com</code> 与 <code>miaosha.jd.com</code></td>
 </tr>
 </tbody></table>
+<a id="more"></a>
+
 <p>如果<strong>域名和端口都相同，但是请求路径不同</strong>，不属于跨域</p>
 <p><strong>跨域问题 是针对ajax的一种限制</strong>。</p>
 <h3 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h3><ul>
@@ -71,9 +75,9 @@
         <category>编程框架</category>
       </categories>
       <tags>
+        <tag>微服务</tag>
         <tag>SpringCloud</tag>
         <tag>SpringBoot</tag>
-        <tag>微服务</tag>
         <tag>跨域</tag>
         <tag>cors</tag>
       </tags>
@@ -124,10 +128,10 @@
         <category>编程框架</category>
       </categories>
       <tags>
-        <tag>微服务</tag>
         <tag>nginx</tag>
         <tag>反向代理</tag>
         <tag>域名解析</tag>
+        <tag>微服务</tag>
       </tags>
   </entry>
   <entry>
@@ -136,6 +140,9 @@
     <content><![CDATA[<h2 id="创建EurekaServer"><a href="#创建EurekaServer" class="headerlink" title="创建EurekaServer"></a>创建EurekaServer</h2><p>1、创建Eureka注册中心。</p>
 <p>pom.xml添加EurekaServer的依赖：</p>
 <figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.cloud<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-cloud-starter-netflix-eureka-server<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<a id="more"></a>
+
 <p>2、编写启动类</p>
 <figure class="highlight less"><table><tr><td class="code"><pre><span class="line"><span class="variable">@SpringBootApplication</span></span><br><span class="line"><span class="variable">@EnableEurekaServer</span>   <span class="comment">//EurekaServer</span></span><br><span class="line">public class RegistryApplication &#123;</span><br><span class="line"></span><br><span class="line">    <span class="selector-tag">public</span> <span class="selector-tag">static</span> <span class="selector-tag">void</span> <span class="selector-tag">main</span>(String[] args) &#123;</span><br><span class="line">        <span class="selector-tag">SpringApplication</span><span class="selector-class">.run</span>(RegistryApplication.class, args);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>3、配置文件</p>
@@ -171,9 +178,9 @@
         <category>编程框架</category>
       </categories>
       <tags>
+        <tag>微服务</tag>
         <tag>SpringCloud</tag>
         <tag>SpringBoot</tag>
-        <tag>微服务</tag>
       </tags>
   </entry>
   <entry>
@@ -196,8 +203,8 @@
         <category>编程框架</category>
       </categories>
       <tags>
-        <tag>Spring</tag>
         <tag>Mybatis</tag>
+        <tag>Spring</tag>
         <tag>SpringMVC</tag>
       </tags>
   </entry>
