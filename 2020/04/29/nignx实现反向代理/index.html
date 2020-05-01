@@ -30,7 +30,7 @@
 <meta property="og:description" content="nginx配置域名解析首先配置域名与ip的映射关系，可以选择本地host配置方式。或者选择购买云服务器和域名后，进行域名解析。 下面就云服务器的域名解析做简要说明。 云服务器的购买推荐阿里云eos。域名购买也可以在阿里云上简单操作。想要映射我们服务器的ip与域名，我们需要做两件事情：服务器设置安全组，以及域名解析。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2020-04-29T14:28:22.000Z">
-<meta property="article:modified_time" content="2020-04-29T14:29:51.129Z">
+<meta property="article:modified_time" content="2020-05-01T17:22:17.648Z">
 <meta property="article:author" content="金年轻">
 <meta property="article:tag" content="nginx">
 <meta property="article:tag" content="反向代理">
@@ -261,14 +261,14 @@
                 <i class="fa fa-file-word-o"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>1.2k</span>
+              <span>2.2k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="fa fa-clock-o"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>1 分钟</span>
+              <span>2 分钟</span>
             </span>
 
         </div>
@@ -318,6 +318,21 @@
 <figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">server</span> &#123;</span><br><span class="line">        <span class="attribute">listen</span>       <span class="number">80</span>;</span><br><span class="line">        <span class="attribute">server_name</span>  manage.<span class="number">888</span>.com;</span><br><span class="line"></span><br><span class="line">        <span class="attribute">proxy_set_header</span> X-Forwarded-Host <span class="variable">$host</span>;</span><br><span class="line">        <span class="attribute">proxy_set_header</span> X-Forwarded-Server <span class="variable">$host</span>;</span><br><span class="line">        <span class="attribute">proxy_set_header</span> X-Forwarded-For <span class="variable">$proxy_add_x_forwarded_for</span>;</span><br><span class="line"></span><br><span class="line">        <span class="attribute">location</span> / &#123;</span><br><span class="line">			<span class="attribute">proxy_pass</span> http://127.0.0.1:9001;</span><br><span class="line">			<span class="attribute">proxy_connect_timeout</span> <span class="number">600</span>;</span><br><span class="line">			<span class="attribute">proxy_read_timeout</span> <span class="number">600</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
 
 <p>至此就可以实现基于nginx通过域名对服务器的访问了。</p>
+<h3 id="root服务器本地路径配置"><a href="#root服务器本地路径配置" class="headerlink" title="root服务器本地路径配置"></a>root服务器本地路径配置</h3><p>配置本地路径，修改location中proxy_pass为root,属性值配置为绝对路径即可.</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">server</span> &#123;</span><br><span class="line">        <span class="attribute">listen</span>       <span class="number">80</span>;</span><br><span class="line">        <span class="attribute">server_name</span>  manage.<span class="number">888</span>.com;</span><br><span class="line"></span><br><span class="line">        <span class="attribute">proxy_set_header</span> X-Forwarded-Host <span class="variable">$host</span>;</span><br><span class="line">        <span class="attribute">proxy_set_header</span> X-Forwarded-Server <span class="variable">$host</span>;</span><br><span class="line">        <span class="attribute">proxy_set_header</span> X-Forwarded-For <span class="variable">$proxy_add_x_forwarded_for</span>;</span><br><span class="line"></span><br><span class="line">        <span class="attribute">location</span> / &#123;</span><br><span class="line">			<span class="comment">#proxy_pass http://127.0.0.1:9001;</span></span><br><span class="line">			<span class="attribute">root</span> /Users/jinze/IdeaProjects/leyouimages/; </span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h3 id="rewrite路径的重写"><a href="#rewrite路径的重写" class="headerlink" title="rewrite路径的重写"></a>rewrite路径的重写</h3><figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">server</span> &#123;</span><br><span class="line">    <span class="attribute">listen</span>       <span class="number">80</span>;</span><br><span class="line">    <span class="attribute">server_name</span>  api.leyou.com;</span><br><span class="line"></span><br><span class="line">    <span class="attribute">proxy_set_header</span> X-Forwarded-Host <span class="variable">$host</span>;</span><br><span class="line">    <span class="attribute">proxy_set_header</span> X-Forwarded-Server <span class="variable">$host</span>;</span><br><span class="line">    <span class="attribute">proxy_set_header</span> X-Forwarded-For <span class="variable">$proxy_add_x_forwarded_for</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 上传路径的映射</span></span><br><span class="line">    <span class="attribute">location</span> /api/upload &#123;</span><br><span class="line">        <span class="attribute">proxy_pass</span> http://127.0.0.1:8082;</span><br><span class="line">        <span class="attribute">proxy_connect_timeout</span> <span class="number">600</span>;</span><br><span class="line">        <span class="attribute">proxy_read_timeout</span> <span class="number">600</span>;</span><br><span class="line">        </span><br><span class="line">        <span class="attribute">rewrite</span> <span class="string">"^/api/(.*)$"</span> /<span class="variable">$1</span> <span class="literal">break</span>;</span><br><span class="line">        <span class="comment">#rewrite "^/api/(.*)$" /api/upload/$1 break;</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p><code>&quot;^/api/(.*)$&quot;</code>：匹配路径的正则表达式，用了分组语法，把<code>/api/</code>以后的所有部分当做1组</p>
+</li>
+<li><p><code>/$1</code>：重写的目标路径，这里用$1引用前面正则表达式匹配到的分组（组编号从1开始），即<code>/api/</code>后面的所有。这样新的路径就是除去<code>/api/</code>以外的所有，就达到了去除<code>/api</code>前缀的目的</p>
+</li>
+<li><p><code>break</code>：指令，常用的有2个，分别是：last、break</p>
+<ul>
+<li>last：重写路径结束后，将得到的路径重新进行一次路径匹配</li>
+<li>break：重写路径结束后，不再重新匹配路径。</li>
+</ul>
+</li>
+</ul>
 
     </div>
 
@@ -426,7 +441,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#nginx配置"><span class="nav-number">1.</span> <span class="nav-text">nginx配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#域名解析"><span class="nav-number">1.1.</span> <span class="nav-text">域名解析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Nignx安装及常用命令"><span class="nav-number">1.2.</span> <span class="nav-text">Nignx安装及常用命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Nignx实现反向代理"><span class="nav-number">1.3.</span> <span class="nav-text">Nignx实现反向代理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#nignx配置文件"><span class="nav-number">1.4.</span> <span class="nav-text">nignx配置文件</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#nginx配置"><span class="nav-number">1.</span> <span class="nav-text">nginx配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#域名解析"><span class="nav-number">1.1.</span> <span class="nav-text">域名解析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Nignx安装及常用命令"><span class="nav-number">1.2.</span> <span class="nav-text">Nignx安装及常用命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Nignx实现反向代理"><span class="nav-number">1.3.</span> <span class="nav-text">Nignx实现反向代理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#nignx配置文件"><span class="nav-number">1.4.</span> <span class="nav-text">nignx配置文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#root服务器本地路径配置"><span class="nav-number">1.5.</span> <span class="nav-text">root服务器本地路径配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#rewrite路径的重写"><span class="nav-number">1.6.</span> <span class="nav-text">rewrite路径的重写</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -513,12 +528,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-area-chart"></i>
     </span>
-    <span title="站点总字数">74k</span>
+    <span title="站点总字数">75k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">1:08</span>
+    <span title="站点阅读时长">1:09</span>
 </div>
 
         
