@@ -553,6 +553,7 @@
         <category>JAVA并发</category>
       </categories>
       <tags>
+        <tag>JAVA并发编程实战</tag>
         <tag>并发容器类</tag>
         <tag>同步工具类</tag>
         <tag>ConcurrentHashMap</tag>
@@ -561,7 +562,6 @@
         <tag>CountDownLatch</tag>
         <tag>Semaphore</tag>
         <tag>CyclicBarrier</tag>
-        <tag>JAVA并发编程实战</tag>
       </tags>
   </entry>
   <entry>
@@ -635,8 +635,8 @@
         <category>JAVA并发</category>
       </categories>
       <tags>
-        <tag>JAVA并发编程实战</tag>
         <tag>Executor框架</tag>
+        <tag>JAVA并发编程实战</tag>
       </tags>
   </entry>
   <entry>
