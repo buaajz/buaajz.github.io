@@ -345,8 +345,8 @@
         <category>编程框架</category>
       </categories>
       <tags>
-        <tag>Mybatis</tag>
         <tag>Spring</tag>
+        <tag>Mybatis</tag>
         <tag>SpringMVC</tag>
       </tags>
   </entry>
@@ -598,9 +598,9 @@
         <category>JAVA并发</category>
       </categories>
       <tags>
+        <tag>Executor框架</tag>
         <tag>并发</tag>
         <tag>多线程</tag>
-        <tag>Executor框架</tag>
       </tags>
   </entry>
   <entry>
