@@ -193,6 +193,160 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://buaajz.github.io/2020/05/03/CentOS7-2%E6%90%AD%E5%BB%BAdocker-FastDFS-Nginx/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/UserImage.jpeg">
+      <meta itemprop="name" content="金年轻">
+      <meta itemprop="description" content="金年轻的个人博客，欢迎交流">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="金年轻">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/05/03/CentOS7-2%E6%90%AD%E5%BB%BAdocker-FastDFS-Nginx/" class="post-title-link" itemprop="url">CentOS7.2搭建docker+FastDFS+Nginx</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-05-03 11:19:26" itemprop="dateCreated datePublished" datetime="2020-05-03T11:19:26+08:00">2020-05-03</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%BC%96%E7%A8%8B%E6%A1%86%E6%9E%B6/" itemprop="url" rel="index"><span itemprop="name">编程框架</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/05/03/CentOS7-2%E6%90%AD%E5%BB%BAdocker-FastDFS-Nginx/" class="post-meta-item leancloud_visitors" data-flag-title="CentOS7.2搭建docker+FastDFS+Nginx" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2020/05/03/CentOS7-2%E6%90%AD%E5%BB%BAdocker-FastDFS-Nginx/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/05/03/CentOS7-2%E6%90%AD%E5%BB%BAdocker-FastDFS-Nginx/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>3k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>3 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="mac通过ssh远程连接linux服务器"><a href="#mac通过ssh远程连接linux服务器" class="headerlink" title="mac通过ssh远程连接linux服务器"></a>mac通过ssh远程连接linux服务器</h2><p>通过密钥连接远端服务器</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh -i &#123;您的 .pem 文件的完整路径&#125; ec2-user@&#123;实例<span class="built_in"> IP </span>地址&#125;</span><br></pre></td></tr></table></figure>
+<p>可以在服务器端加入本机密钥对id_rsa.pub</p>
+<p>注意远程服务器重新配置系统后，需要将本机known_hosts文件中关于云主机的配置删掉</p>
+<p>重新执行命令连接就可以了</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh <span class="symbol">root@</span><span class="number">182.92</span><span class="number">.183</span><span class="number">.89</span></span><br></pre></td></tr></table></figure>
+
+<p>上传文件到服务器</p>
+<figure class="highlight elixir"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">scp /Users/jinze/Desktop/未命名文件夹/fastdfs-nginx-module_v1.<span class="number">16</span>.tar.gz root<span class="variable">@182</span>.<span class="number">92.183</span>.<span class="number">89</span><span class="symbol">:/usr/software/</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="CentOS7-2环境搭建"><a href="#CentOS7-2环境搭建" class="headerlink" title="CentOS7.2环境搭建"></a>CentOS7.2环境搭建</h2><p>编译环境（FastDFS是C语言开发，安装FastDFS需要先将官网下载的源码进行编译，编译依赖gcc环境，如果没有gcc环境，需要安装gcc）</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install git gcc gcc-c++ make <span class="built_in">auto</span>make <span class="built_in">auto</span>conf libtool pcre pcre-devel zlib zlib-devel openssl-devel wget vim -y</span><br></pre></td></tr></table></figure>
+<p>git</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum <span class="keyword">install</span> git</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="Docker安装"><a href="#Docker安装" class="headerlink" title="Docker安装"></a>Docker安装</h2><h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><p>但是有旧版本的话，需要先卸载旧版本</p>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">sudo</span> <span class="string">yum remove docker \</span></span><br><span class="line">              <span class="meta">docker-client</span> <span class="string">\</span></span><br><span class="line">              <span class="meta">docker-client-latest</span> <span class="string">\</span></span><br><span class="line">              <span class="meta">docker-common</span> <span class="string">\</span></span><br><span class="line">              <span class="meta">docker-latest</span> <span class="string">\</span></span><br><span class="line">              <span class="meta">docker-latest-logrotate</span> <span class="string">\</span></span><br><span class="line">              <span class="meta">docker-logrotate</span> <span class="string">\</span></span><br><span class="line">              <span class="attr">docker-engine</span></span><br></pre></td></tr></table></figure>
+<p>无旧版本时</p>
+<ul>
+<li>安装所需的软件包<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">sudo</span> <span class="string">yum install -y yum-utils \</span></span><br><span class="line">  <span class="meta">device-mapper-persistent-data</span> <span class="string">\</span></span><br><span class="line">  <span class="attr">lvm2</span></span><br></pre></td></tr></table></figure></li>
+<li>配置阿里云Docker Yum源<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo yum-config-manager --<span class="built_in">add</span>-repo http://mirrors.aliyun.<span class="keyword">com</span>/docker-<span class="keyword">ce</span>/linux/centos/docker-<span class="keyword">ce</span>.repo</span><br></pre></td></tr></table></figure></li>
+<li>安装最新版本的Docker<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo yum install docker-<span class="keyword">ce</span> docker-<span class="keyword">ce</span>-cli containerd.io</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>参考博文：<a href="https://www.cnblogs.com/moonstars/p/12577375.html" target="_blank" rel="noopener">https://www.cnblogs.com/moonstars/p/12577375.html</a></p>
+<h3 id="命令"><a href="#命令" class="headerlink" title="命令"></a>命令</h3><p>启动Docker的命令</p>
+<figure class="highlight crmsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl <span class="literal">start</span> docker</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">service docker start#启动docker</span><br><span class="line">service docker stop#停止docker</span><br><span class="line">service docker restart#重启docker</span><br></pre></td></tr></table></figure>
+<p>设置docker开机自启动</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl <span class="builtin-name">enable</span> docker.service</span><br></pre></td></tr></table></figure>
+<h2 id="Docker中Nginx及FastDFS安装"><a href="#Docker中Nginx及FastDFS安装" class="headerlink" title="Docker中Nginx及FastDFS安装"></a>Docker中Nginx及FastDFS安装</h2><h3 id="FastDFS安装"><a href="#FastDFS安装" class="headerlink" title="FastDFS安装"></a>FastDFS安装</h3><p>参考博文：<a href="https://blog.csdn.net/qq_43602335/article/details/101267565?utm_medium=distribute.pc_relevant.none-task-blog-BlogCommendFromBaidu-2&amp;depth_1-utm_source=distribute.pc_relevant.none-task-blog-BlogCommendFromBaidu-2" target="_blank" rel="noopener">https://blog.csdn.net/qq_43602335/article/details/101267565?utm_medium=distribute.pc_relevant.none-task-blog-BlogCommendFromBaidu-2&amp;depth_1-utm_source=distribute.pc_relevant.none-task-blog-BlogCommendFromBaidu-2</a></p>
+<h3 id="Nginx安装"><a href="#Nginx安装" class="headerlink" title="Nginx安装"></a>Nginx安装</h3><p>参考博文：<a href="https://blog.csdn.net/u012946310/article/details/81535751" target="_blank" rel="noopener">https://blog.csdn.net/u012946310/article/details/81535751</a></p>
+<h3 id="fastdfs-nginx-module安装"><a href="#fastdfs-nginx-module安装" class="headerlink" title="fastdfs-nginx-module安装"></a>fastdfs-nginx-module安装</h3><p>参考博文：<a href="https://blog.csdn.net/u012946310/article/details/81539721?ops_request_misc=&amp;request_id=&amp;biz_id=102&amp;utm_medium=distribute.pc_search_result.none-task-blog-2~all~sobaiduweb~default-3" target="_blank" rel="noopener">https://blog.csdn.net/u012946310/article/details/81539721?ops_request_misc=&amp;request_id=&amp;biz_id=102&amp;utm_medium=distribute.pc_search_result.none-task-blog-2~all~sobaiduweb~default-3</a><br><a href="https://blog.csdn.net/qq_34898847/article/details/82258453?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522158843425919724848362336%2522%252C%2522scm%2522%253A%252220140713.130102334.pc%255Fall.%2522%257D&amp;request_id=158843425919724848362336&amp;biz_id=0&amp;utm_medium=distribute.pc_search_result.none-task-blog-2~all~first_rank_v2~rank_v25-16" target="_blank" rel="noopener">https://blog.csdn.net/qq_34898847/article/details/82258453?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522158843425919724848362336%2522%252C%2522scm%2522%253A%252220140713.130102334.pc%255Fall.%2522%257D&amp;request_id=158843425919724848362336&amp;biz_id=0&amp;utm_medium=distribute.pc_search_result.none-task-blog-2~all~first_rank_v2~rank_v25-16</a></p>
+<p>针对make中报错：</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fastdfs-nginx-module<span class="regexp">/src/</span>/common.<span class="string">c:</span><span class="number">21</span>:<span class="number">25</span>: fatal <span class="string">error:</span> fdfs_define.<span class="string">h:</span> No such file or directory</span><br></pre></td></tr></table></figure>
+
+<p>原因：编译安装nginx的fastdfs插件的头文件没有找到，由于编译nginx时候系统会到／usr/local /include，而编译安装fastdfs-nginx-module时则默认保存在了/usr/include目录。<br>解决方案有以下三种：</p>
+<p>第一种如下</p>
+<figure class="highlight livecodeserver"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">ln</span> -s /usr/<span class="built_in">include</span>/fast* /usr/<span class="built_in">local</span>/<span class="built_in">include</span>/</span><br></pre></td></tr></table></figure>
+
+<p>第二种修改fastdfs-nginx-module-1.20/src/config文件,去掉local路径</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">CORE_INCS</span>=<span class="string">"$CORE_INCS /usr/include/fastdfs /usr/include/fastcommon/"</span></span><br><span class="line"><span class="attr">CORE_LIBS</span>=<span class="string">"$CORE_LIBS -lfastcommon -lfdfsclient"</span></span><br></pre></td></tr></table></figure>
+<p>第三种创建软连接</p>
+<figure class="highlight crystal"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ln -sv /usr/<span class="keyword">include</span>/fastcommon /usr/local/<span class="keyword">include</span>/fastcommon </span><br><span class="line">ln -sv /usr/<span class="keyword">include</span>/fastdfs /usr/local/<span class="keyword">include</span>/fastdfs </span><br><span class="line">ln -sv /usr/lib64/libfastcommon.so /usr/local/<span class="class"><span class="keyword">lib</span>/<span class="title">libfastcommon</span>.<span class="title">so</span></span></span><br></pre></td></tr></table></figure>
+
+<p>参考博文：<a href="https://www.cnblogs.com/wanghaiqi24/p/10031989.html" target="_blank" rel="noopener">https://www.cnblogs.com/wanghaiqi24/p/10031989.html</a><br><a href="https://blog.csdn.net/zhouzhiwengang/article/details/87702965?utm_medium=distribute.pc_relevant.none-task-blog-BlogCommendFromBaidu-4&amp;depth_1-utm_source=distribute.pc_relevant.none-task-blog-BlogCommendFromBaidu-4" target="_blank" rel="noopener">https://blog.csdn.net/zhouzhiwengang/article/details/87702965?utm_medium=distribute.pc_relevant.none-task-blog-BlogCommendFromBaidu-4&amp;depth_1-utm_source=distribute.pc_relevant.none-task-blog-BlogCommendFromBaidu-4</a></p>
+<h2 id="非Docker环境中Nginx及FastDFS安装"><a href="#非Docker环境中Nginx及FastDFS安装" class="headerlink" title="非Docker环境中Nginx及FastDFS安装"></a>非Docker环境中Nginx及FastDFS安装</h2><p>非Docker环境中Nginx及FastDFS安装在此不再赘述。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://buaajz.github.io/2020/05/01/Vue%E7%9A%84v-data-table%E5%AE%9E%E7%8E%B0/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1430,120 +1584,6 @@
   
   
 
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://buaajz.github.io/2020/04/05/JAVA%E5%B9%B6%E5%8F%91%E5%AE%B9%E5%99%A8%E7%B1%BB%E6%8E%A2%E7%A9%B6/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/UserImage.jpeg">
-      <meta itemprop="name" content="金年轻">
-      <meta itemprop="description" content="金年轻的个人博客，欢迎交流">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="金年轻">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/04/05/JAVA%E5%B9%B6%E5%8F%91%E5%AE%B9%E5%99%A8%E7%B1%BB%E6%8E%A2%E7%A9%B6/" class="post-title-link" itemprop="url">JAVA并发容器类探究</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-04-05 15:16:26" itemprop="dateCreated datePublished" datetime="2020-04-05T15:16:26+08:00">2020-04-05</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80/" itemprop="url" rel="index"><span itemprop="name">语言基础</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80/JAVA%E5%B9%B6%E5%8F%91/" itemprop="url" rel="index"><span itemprop="name">JAVA并发</span></a>
-                </span>
-            </span>
-
-          
-            <span id="/2020/04/05/JAVA%E5%B9%B6%E5%8F%91%E5%AE%B9%E5%99%A8%E7%B1%BB%E6%8E%A2%E7%A9%B6/" class="post-meta-item leancloud_visitors" data-flag-title="JAVA并发容器类探究" title="阅读次数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">阅读次数：</span>
-              <span class="leancloud-visitors-count"></span>
-            </span>
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="fa fa-comment-o"></i>
-      </span>
-      <span class="post-meta-item-text">Valine：</span>
-    
-    <a title="valine" href="/2020/04/05/JAVA%E5%B9%B6%E5%8F%91%E5%AE%B9%E5%99%A8%E7%B1%BB%E6%8E%A2%E7%A9%B6/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2020/04/05/JAVA%E5%B9%B6%E5%8F%91%E5%AE%B9%E5%99%A8%E7%B1%BB%E6%8E%A2%E7%A9%B6/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-file-word-o"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>3.9k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-clock-o"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>4 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="同步容器类"><a href="#同步容器类" class="headerlink" title="同步容器类"></a>同步容器类</h2><p><strong>Vector Hashtable Collections.synchronizedXxx</strong><br>实现线程安全的方式：将状态封装起来，并对每个公有方法进行同步，每次只有一个线程可以访问容器的状态</p>
-<p>同步容器类自身线程安全，但可能需要客户端额外加锁。<br>在迭代的时候会遇到问题。容器类的迭代使用Iterator，如果迭代期间没有加锁，并发修改容器，会抛出<strong>ConcurrentModificationException</strong>。<br>同步容器类表现行为是<strong>fail-fast</strong>。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/04/05/JAVA%E5%B9%B6%E5%8F%91%E5%AE%B9%E5%99%A8%E7%B1%BB%E6%8E%A2%E7%A9%B6/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
   </div>
 
   
@@ -1616,7 +1656,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">17</span>
+          <span class="site-state-item-count">18</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -1629,7 +1669,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">34</span>
+        <span class="site-state-item-count">39</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -1687,12 +1727,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-area-chart"></i>
     </span>
-    <span title="站点总字数">75k</span>
+    <span title="站点总字数">78k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">1:09</span>
+    <span title="站点阅读时长">1:11</span>
 </div>
 
         
